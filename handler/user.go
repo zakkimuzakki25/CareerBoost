@@ -4,10 +4,8 @@ import (
 	"CareerBoost/entity"
 	"CareerBoost/sdk/config"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -46,7 +44,7 @@ func (h *handler) userRegister(ctx *gin.Context) {
 		return
 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Successfully registered", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Registrasi sukses", nil, nil)
 }
 
 // function login
@@ -63,7 +61,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 	if err := h.db.Where("email = ?", userBody.Email).First(&user).Error; err != nil {
 
 		if err := h.db.Where("username = ?", userBody.Email).First(&user).Error; err != nil {
-			h.ErrorResponse(ctx, http.StatusBadRequest, "Account not found", nil)
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Akun tidak ditemukan", nil)
 			return
 		}
 
@@ -71,37 +69,18 @@ func (h *handler) userLogin(ctx *gin.Context) {
 
 	//cek password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userBody.Password)); err != nil {
-		h.ErrorResponse(ctx, http.StatusUnauthorized, "Wrong password", nil)
+		h.ErrorResponse(ctx, http.StatusUnauthorized, "Password salah", nil)
 		return
 	}
 
-	expTime := time.Now().Add(time.Minute * 60)
-	claim := &config.JWTClaim{
-		Username: user.Username,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "go-gin",
-			ExpiresAt: jwt.NewNumericDate(expTime),
-		},
-	}
-
-	//deklarasi algonya untuk sign in
-	tokenAlg := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
-
-	token, err := tokenAlg.SignedString(config.JWT_KEY)
+	tokenJwt, err := config.GenerateToken(userBody)
 	if err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "create token failed", nil)
 		return
 	}
 
-	//set token ke cookie agar lebih aman
-	http.SetCookie(ctx.Writer, &http.Cookie{
-		Name:     "token",
-		Path:     "/",
-		Value:    token,
-		HttpOnly: true,
-	})
-
-	h.SuccessResponse(ctx, http.StatusOK, "Login Succes", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Login Berhasil", gin.H{
+		"token": tokenJwt}, nil)
 }
 
 // function logout
@@ -115,5 +94,5 @@ func (h *handler) userLogout(ctx *gin.Context) {
 		MaxAge:   -1,
 	})
 
-	h.SuccessResponse(ctx, http.StatusOK, "Logout Succes", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Logout Berhasil", nil, nil)
 }

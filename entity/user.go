@@ -1,6 +1,9 @@
 package entity
 
 import (
+	"time"
+
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 )
 
@@ -25,4 +28,18 @@ type UserRegister struct {
 type UserLogin struct {
 	Email    string `json:"email" gorm:"type:VARCHAR(200);NOT NULL"`
 	Password string `json:"password" gorm:"type:VARCHAR(255);NOT NULL"`
+}
+
+type UserClaims struct {
+	Email string `json:"email"`
+	jwt.RegisteredClaims
+}
+
+func NewUserClaims(email string, exp time.Duration) UserClaims {
+	return UserClaims{
+		Email: email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(exp)),
+		},
+	}
 }
