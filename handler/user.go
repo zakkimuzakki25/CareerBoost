@@ -79,13 +79,19 @@ func (h *handler) userLogin(ctx *gin.Context) {
 		return
 	}
 
+	http.SetCookie(ctx.Writer, &http.Cookie{
+		Name:     "token",
+		Path:     "/",
+		Value:    tokenJwt,
+		HttpOnly: true,
+	})
+
 	h.SuccessResponse(ctx, http.StatusOK, "Login Berhasil", gin.H{
 		"token": tokenJwt}, nil)
 }
 
 // function logout
 func (h *handler) userLogout(ctx *gin.Context) {
-	//hapus token yang ada di cookie
 	http.SetCookie(ctx.Writer, &http.Cookie{
 		Name:     "token",
 		Path:     "/",

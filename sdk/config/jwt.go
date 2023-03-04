@@ -29,6 +29,7 @@ func GenerateToken(payload entity.UserLogin) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return tokenJwtReal, nil
 }
 
@@ -43,12 +44,11 @@ func DecodeToken(signedToken string, ptrClaims jwt.Claims, KEY string) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("token has been tampered with")
+		return fmt.Errorf("token has been tampered")
 	}
 
 	if !token.Valid {
-		// token is not valid
-		return fmt.Errorf("invalid token")
+		return fmt.Errorf("invalid")
 	}
 
 	return nil
