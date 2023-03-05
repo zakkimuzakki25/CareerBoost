@@ -9,7 +9,7 @@ import (
 
 	"gorm.io/gorm"
 )
-
+//remove this!
 func main() {
 	cnfg := config.Init()
 	if err := cnfg.Load(".env"); err != nil {
