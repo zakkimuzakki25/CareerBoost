@@ -9,10 +9,10 @@ import (
 
 type User struct {
 	gorm.Model
-	FullName     string     `json:"full_name" gorm:"type:VARCHAR(100);NOT NULL"`
+	FullName     string     `json:"full_name" gorm:"type:VARCHAR(255);NOT NULL"`
 	Username     string     `json:"username" gorm:"type:VARCHAR(20);UNIQUE"`
-	Email        string     `json:"email" gorm:"type:VARCHAR(100);UNIQUE"`
-	Password     string     `json:"password" gorm:"type:VARCHAR(25);NOT NULL"`
+	Email        string     `json:"email" gorm:"type:VARCHAR(255);UNIQUE"`
+	Password     string     `json:"password" gorm:"type:VARCHAR(255);NOT NULL"`
 	Skills       []string   `json:"skills" gorm:"type:VARCHAR(20)"`
 	Interest     []Interest `json:"interestID" gorm:"many2many:users_interest"`
 	TanggalLahir time.Time  `json:"tanggal_lahir"`
