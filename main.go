@@ -30,7 +30,7 @@ func main() {
 	}
 
 	db := sql.GetInstance()
-	db.AutoMigrate(entity.User{}, entity.Interest{})
+	db.AutoMigrate(entity.User{}, entity.Interest{}, entity.Course{})
 
 	if err := seedInterest(db); err != nil {
 		panic("GAGAL SEED")

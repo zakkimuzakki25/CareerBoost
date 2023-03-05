@@ -1,6 +1,6 @@
 package entity
 
-var (
+const (
 	FrontEndInterest              = "Front End"
 	BackEndInterest               = "Back End"
 	DataScienceInterest           = "Data Science"

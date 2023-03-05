@@ -61,7 +61,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 	if err := h.db.Where("email = ?", userBody.Email).First(&user).Error; err != nil {
 
 		if err := h.db.Where("username = ?", userBody.Email).First(&user).Error; err != nil {
-			h.ErrorResponse(ctx, http.StatusBadRequest, "Akun tidak ditemukan", nil)
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Email atau Password salah", nil)
 			return
 		}
 
@@ -69,7 +69,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 
 	//cek password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userBody.Password)); err != nil {
-		h.ErrorResponse(ctx, http.StatusUnauthorized, "Password salah", nil)
+		h.ErrorResponse(ctx, http.StatusUnauthorized, "Email atau Password salah", nil)
 		return
 	}
 
@@ -101,4 +101,8 @@ func (h *handler) userLogout(ctx *gin.Context) {
 	})
 
 	h.SuccessResponse(ctx, http.StatusOK, "Logout Berhasil", nil, nil)
+}
+
+func (h *handler) userUpdateProfile(ctx *gin.Context) {
+
 }

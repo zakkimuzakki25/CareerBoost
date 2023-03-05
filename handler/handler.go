@@ -35,12 +35,11 @@ func (h *handler) registerRoutes() {
 	v1.Use(middleware.JwtMiddleware())
 
 	// Post
-	v1.GET("/home", h.ping)
+	v1.GET("/", h.ping)
 	h.http.POST("/user/register", h.userRegister)
 	h.http.POST("/user/login", h.userLogin)
 	h.http.GET("/user/logout", h.userLogout)
 
-	// v1.GET("/home", h.ping)
 	// v1.GET("/post/:post_id", h.getPost)
 	// v1.PUT("/post/:post_id", h.updatePost) // 1 -> aku mau update post yang id nya 1
 	// v1.DELETE("/post/:post_id", h.deletePost)
