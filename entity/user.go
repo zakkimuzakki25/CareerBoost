@@ -32,17 +32,17 @@ type UserRegister struct {
 }
 
 type UserLogin struct {
-	Email        string    `json:"email" gorm:"NOT NULL"`
-	Password     string    `json:"password" gorm:"NOT NULL"`
-	TanggalLahir time.Time `json:"tanggal_lahir"`
-	TempatLahir  string    `json:"tempat_lahir"`
+	Email    string `json:"email" gorm:"NOT NULL"`
+	Password string `json:"password" gorm:"NOT NULL"`
 }
 
 type UserUpdateProfile struct {
-	FullName     string `json:"full_name"`
-	Lokasi       string `json:"lokasi"`
-	ProfilePhoto string `json:"profile_photo"`
-	Deskripsi    string `json:"deskripsi"`
+	FullName     string    `json:"full_name"`
+	Lokasi       string    `json:"lokasi"`
+	ProfilePhoto string    `json:"profile_photo"`
+	Deskripsi    string    `json:"deskripsi"`
+	TanggalLahir time.Time `json:"tanggal_lahir"`
+	TempatLahir  string    `json:"tempat_lahir"`
 }
 
 type UserClaims struct {
