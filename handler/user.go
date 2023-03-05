@@ -103,5 +103,24 @@ func (h *handler) userLogout(ctx *gin.Context) {
 }
 
 func (h *handler) userUpdateProfile(ctx *gin.Context) {
+	var userBody entity.UserUpdateProfile
 
+	if err := h.BindBody(ctx, &userBody); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request update", nil)
+		return
+	}
+
+	var userDB entity.User
+
+	if err := h.db.Model(&userDB).Where("email = ?", userBody.Email).First(&userDB).Updates(entity.User{
+		FullName:    userBody.FullName,
+		Lokasi:      userBody.Lokasi,
+		TempatLahir: userBody.TempatLahir,
+		Deskripsi:   userBody.Deskripsi,
+	}).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Update", nil, nil)
 }

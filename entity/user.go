@@ -37,6 +37,7 @@ type UserLogin struct {
 }
 
 type UserUpdateProfile struct {
+	Email        string    `json:"email"`
 	FullName     string    `json:"full_name"`
 	Lokasi       string    `json:"lokasi"`
 	ProfilePhoto string    `json:"profile_photo"`

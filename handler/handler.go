@@ -30,15 +30,16 @@ func Init(config config.Interface, db *gorm.DB) *handler {
 
 func (h *handler) registerRoutes() {
 
-	v1 := h.http.Group("api/v1")
+	api := h.http.Group("api")
 
-	v1.Use(middleware.JwtMiddleware())
+	api.Use(middleware.JwtMiddleware())
 
 	// Post
-	v1.GET("/", h.ping)
+	api.GET("/", h.ping)
 	h.http.POST("/user/register", h.userRegister)
 	h.http.POST("/user/login", h.userLogin)
 	h.http.GET("/user/logout", h.userLogout)
+	api.POST("/profile/update", h.userUpdateProfile)
 
 	// v1.GET("/post/:post_id", h.getPost)
 	// v1.PUT("/post/:post_id", h.updatePost) // 1 -> aku mau update post yang id nya 1
