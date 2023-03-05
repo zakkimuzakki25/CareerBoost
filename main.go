@@ -70,3 +70,5 @@ func seedInterest(sql *gorm.DB) error {
 	}
 	return nil
 }
+
+//tes
