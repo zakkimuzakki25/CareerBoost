@@ -73,7 +73,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 		return
 	}
 
-	tokenJwt, err := config.GenerateToken(userBody)
+	tokenJwt, err := config.GenerateToken(user)
 	if err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "create token failed", nil)
 		return
@@ -202,6 +202,36 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		TanggalLahir: userDB.TanggalLahir,
 		TempatLahir:  userDB.TempatLahir,
 		InterestID:   userDB.Interest,
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)
+}
+
+func (h *handler) userGetHome(ctx *gin.Context) {
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
+	var userDB entity.User
+	err := h.db.Where("id = ?", userID).Take(&userDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	userResp := entity.UserHome{
+		FullName:     userDB.FullName,
+		ProfilePhoto: userDB.ProfilePhoto,
 	}
 
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)

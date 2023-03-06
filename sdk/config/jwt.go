@@ -15,7 +15,7 @@ import (
 // 	jwt.RegisteredClaims
 // }
 
-func GenerateToken(payload entity.UserLogin) (string, error) {
+func GenerateToken(payload entity.User) (string, error) {
 
 	expStr := os.Getenv("JWT_EXP")
 	var exp time.Duration
@@ -24,7 +24,7 @@ func GenerateToken(payload entity.UserLogin) (string, error) {
 		exp = time.Hour * 1
 	}
 
-	tokenJWT := jwt.NewWithClaims(jwt.SigningMethodHS256, entity.NewUserClaims(payload.Email, exp))
+	tokenJWT := jwt.NewWithClaims(jwt.SigningMethodHS256, entity.NewUserClaims(payload.ID, exp))
 	tokenJwtReal, err := tokenJWT.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		return "", err
