@@ -53,13 +53,13 @@ type UserHome struct {
 }
 
 type UserClaims struct {
-	ID uint `json:"id"`
+	Email string `json:"email"`
 	jwt.RegisteredClaims
 }
 
-func NewUserClaims(id uint, exp time.Duration) UserClaims {
+func NewUserClaims(email string, exp time.Duration) UserClaims {
 	return UserClaims{
-		ID: id,
+		Email: email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(exp)),
 		},

@@ -73,7 +73,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 		return
 	}
 
-	tokenJwt, err := config.GenerateToken(user)
+	tokenJwt, err := config.GenerateToken(userBody)
 	if err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "create token failed", nil)
 		return
@@ -110,33 +110,13 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 		return
 	}
 
-	user, exist := ctx.Get("user")
-	if !exist {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-		return
-	}
-
-	// fmt.Println("========================")
-	// fmt.Println(user)
-	// fmt.Println("========================")
-
-	claims, ok := user.(entity.UserClaims)
-	if !ok {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-		return
-	}
-
-	userID := claims.ID
-
 	var userDB entity.User
 
-	if err := h.db.Model(&userDB).Where("id = ?", userID).First(&userDB).Updates(entity.User{
-		FullName:     userBody.FullName,
-		Lokasi:       userBody.Lokasi,
-		ProfilePhoto: userBody.ProfilePhoto,
-		TanggalLahir: userBody.TanggalLahir,
-		TempatLahir:  userBody.TempatLahir,
-		Deskripsi:    userBody.Deskripsi,
+	if err := h.db.Model(&userDB).Where("email = ?", userBody.Email).First(&userDB).Updates(entity.User{
+		FullName:    userBody.FullName,
+		Lokasi:      userBody.Lokasi,
+		TempatLahir: userBody.TempatLahir,
+		Deskripsi:   userBody.Deskripsi,
 	}).Error; err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
@@ -185,7 +165,6 @@ func (h *handler) userUploadPhotoProfile(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Upload", link, nil)
 }
 
-// nampilin data di profile
 func (h *handler) userGetProfile(ctx *gin.Context) {
 	user, exist := ctx.Get("user")
 	if !exist {
@@ -218,41 +197,11 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		Email:        userDB.Email,
 		FullName:     userDB.FullName,
 		Lokasi:       userDB.Lokasi,
+		ProfilePhoto: userDB.ProfilePhoto,
 		Deskripsi:    userDB.Deskripsi,
 		TanggalLahir: userDB.TanggalLahir,
 		TempatLahir:  userDB.TempatLahir,
 		InterestID:   userDB.Interest,
-	}
-
-	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)
-}
-
-// api home
-func (h *handler) userGetHome(ctx *gin.Context) {
-	user, exist := ctx.Get("user")
-	if !exist {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-		return
-	}
-
-	claims, ok := user.(entity.UserClaims)
-	if !ok {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-		return
-	}
-
-	userID := claims.ID
-
-	var userDB entity.User
-	err := h.db.Where("id = ?", userID).Take(&userDB).Error
-	if err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-		return
-	}
-
-	userResp := entity.UserHome{
-		FullName:     userDB.FullName,
-		ProfilePhoto: userDB.ProfilePhoto,
 	}
 
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)
