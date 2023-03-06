@@ -185,6 +185,7 @@ func (h *handler) userUploadPhotoProfile(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Upload", link, nil)
 }
 
+// nampilin data di profile
 func (h *handler) userGetProfile(ctx *gin.Context) {
 	user, exist := ctx.Get("user")
 	if !exist {
@@ -217,11 +218,41 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		Email:        userDB.Email,
 		FullName:     userDB.FullName,
 		Lokasi:       userDB.Lokasi,
-		ProfilePhoto: userDB.ProfilePhoto,
 		Deskripsi:    userDB.Deskripsi,
 		TanggalLahir: userDB.TanggalLahir,
 		TempatLahir:  userDB.TempatLahir,
 		InterestID:   userDB.Interest,
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)
+}
+
+// api home
+func (h *handler) userGetHome(ctx *gin.Context) {
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
+	var userDB entity.User
+	err := h.db.Where("id = ?", userID).Take(&userDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	userResp := entity.UserHome{
+		FullName:     userDB.FullName,
+		ProfilePhoto: userDB.ProfilePhoto,
 	}
 
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)

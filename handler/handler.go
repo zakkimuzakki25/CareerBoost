@@ -34,9 +34,9 @@ func Init(config config.Interface, db *gorm.DB, supClient supabasestorageuploade
 
 func (h *handler) registerRoutes() {
 
-	api := h.http.Group("api")
-
 	h.http.Use(cors.Default())
+
+	api := h.http.Group("api")
 
 	api.Use(middleware.JwtMiddleware())
 
@@ -48,6 +48,7 @@ func (h *handler) registerRoutes() {
 	api.POST("/profile", h.userUpdateProfile)
 	api.POST("/profile/photo/upload", h.userUploadPhotoProfile)
 	api.GET("/profile", h.userGetProfile)
+	api.GET("/", h.userGetHome)
 
 	// v1.GET("/post/:post_id", h.getPost)
 	// v1.PUT("/post/:post_id", h.updatePost) // 1 -> aku mau update post yang id nya 1

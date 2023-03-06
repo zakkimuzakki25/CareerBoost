@@ -47,6 +47,11 @@ type UserProfilePage struct {
 	InterestID   []Interest `json:"interestID"`
 }
 
+type UserHome struct {
+	FullName     string `json:"full_name"`
+	ProfilePhoto string `json:"profile_photo"`
+}
+
 type UserClaims struct {
 	ID uint `json:"id"`
 	jwt.RegisteredClaims
