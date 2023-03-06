@@ -7,6 +7,7 @@ import (
 	"CareerBoost/sdk/database"
 	"log"
 
+	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
 	"gorm.io/gorm"
 )
 
@@ -24,6 +25,13 @@ func main() {
 		Database: cnfg.Get("DB_DATABASE"),
 	}
 
+	supClient := supabasestorageuploader.NewSupabaseClient(
+		cnfg.Get("PROJECT_URL"),
+		cnfg.Get("PROJECT_API_KEYS"),
+		cnfg.Get("STORAGE_NAME"),
+		cnfg.Get("STORAGE_PATH"),
+	)
+
 	sql, err := database.InitDB(databaseConfig)
 	if err != nil {
 		log.Fatal("init db failed,", err)
@@ -36,7 +44,7 @@ func main() {
 		panic("GAGAL SEED")
 	}
 
-	handler := handler.Init(cnfg, db)
+	handler := handler.Init(cnfg, db, supClient)
 	handler.Run()
 
 }

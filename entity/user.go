@@ -36,24 +36,25 @@ type UserLogin struct {
 	Password string `json:"password" gorm:"NOT NULL"`
 }
 
-type UserUpdateProfile struct {
-	Email        string    `json:"email"`
-	FullName     string    `json:"full_name"`
-	Lokasi       string    `json:"lokasi"`
-	ProfilePhoto string    `json:"profile_photo"`
-	Deskripsi    string    `json:"deskripsi"`
-	TanggalLahir time.Time `json:"tanggal_lahir"`
-	TempatLahir  string    `json:"tempat_lahir"`
+type UserProfilePage struct {
+	Email        string     `json:"email"`
+	FullName     string     `json:"full_name"`
+	Lokasi       string     `json:"lokasi"`
+	ProfilePhoto string     `json:"profile_photo"`
+	Deskripsi    string     `json:"deskripsi"`
+	TanggalLahir time.Time  `json:"tanggal_lahir"`
+	TempatLahir  string     `json:"tempat_lahir"`
+	InterestID   []Interest `json:"interestID"`
 }
 
 type UserClaims struct {
-	Email string `json:"email"`
+	ID uint `json:"id"`
 	jwt.RegisteredClaims
 }
 
-func NewUserClaims(email string, exp time.Duration) UserClaims {
+func NewUserClaims(id uint, exp time.Duration) UserClaims {
 	return UserClaims{
-		Email: email,
+		ID: id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(exp)),
 		},

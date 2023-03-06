@@ -73,7 +73,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 		return
 	}
 
-	tokenJwt, err := config.GenerateToken(userBody)
+	tokenJwt, err := config.GenerateToken(user)
 	if err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "create token failed", nil)
 		return
@@ -103,24 +103,126 @@ func (h *handler) userLogout(ctx *gin.Context) {
 }
 
 func (h *handler) userUpdateProfile(ctx *gin.Context) {
-	var userBody entity.UserUpdateProfile
+	var userBody entity.UserProfilePage
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request update", nil)
 		return
 	}
 
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	// fmt.Println("========================")
+	// fmt.Println(user)
+	// fmt.Println("========================")
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
 	var userDB entity.User
 
-	if err := h.db.Model(&userDB).Where("email = ?", userBody.Email).First(&userDB).Updates(entity.User{
-		FullName:    userBody.FullName,
-		Lokasi:      userBody.Lokasi,
-		TempatLahir: userBody.TempatLahir,
-		Deskripsi:   userBody.Deskripsi,
+	if err := h.db.Model(&userDB).Where("id = ?", userID).First(&userDB).Updates(entity.User{
+		FullName:     userBody.FullName,
+		Lokasi:       userBody.Lokasi,
+		ProfilePhoto: userBody.ProfilePhoto,
+		TanggalLahir: userBody.TanggalLahir,
+		TempatLahir:  userBody.TempatLahir,
+		Deskripsi:    userBody.Deskripsi,
 	}).Error; err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
 	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Update", nil, nil)
+}
+
+// upload foto
+func (h *handler) userUploadPhotoProfile(ctx *gin.Context) {
+	file, err := ctx.FormFile("profile")
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	link, err := h.supClient.Upload(file)
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
+	var userDB entity.User
+
+	if err := h.db.Model(&userDB).Where("id = ?", userID).First(&userDB).Updates(entity.User{
+		ProfilePhoto: link,
+	}).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Upload", link, nil)
+}
+
+func (h *handler) userGetProfile(ctx *gin.Context) {
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
+	var userDB entity.User
+	err := h.db.Where("id = ?", userID).Take(&userDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	errr := h.db.Preload("Interest").First(&userDB, userID).Error
+	if errr != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	userResp := entity.UserProfilePage{
+		Email:        userDB.Email,
+		FullName:     userDB.FullName,
+		Lokasi:       userDB.Lokasi,
+		ProfilePhoto: userDB.ProfilePhoto,
+		Deskripsi:    userDB.Deskripsi,
+		TanggalLahir: userDB.TanggalLahir,
+		TempatLahir:  userDB.TempatLahir,
+		InterestID:   userDB.Interest,
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)
 }
