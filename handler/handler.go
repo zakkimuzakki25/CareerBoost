@@ -39,7 +39,7 @@ func (h *handler) registerRoutes() {
 	api.Use(middleware.JwtMiddleware())
 
 	// Post
-	api.GET("/home", h.ping)
+	api.GET("/ping", h.ping)
 	h.http.POST("/user/register", h.userRegister)
 	h.http.POST("/user/login", h.userLogin)
 	h.http.GET("/user/logout", h.userLogout)
@@ -54,7 +54,7 @@ func (h *handler) registerRoutes() {
 }
 
 func (h *handler) ping(ctx *gin.Context) {
-	h.SuccessResponse(ctx, http.StatusOK, "pong", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "ping", nil, nil)
 }
 
 func (h *handler) Run() {
