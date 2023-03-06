@@ -112,13 +112,13 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 
 	var userDB entity.User
 
-	if err := h.db.Model(&userDB).Where("email = ?", userBody.Email).First(&userDB).Updates(entity.User{
+	if err := h.db.Model(&userDB).Where("id = ?", userBody.Email).First(&userDB).Updates(entity.User{
 		FullName:    userBody.FullName,
 		Lokasi:      userBody.Lokasi,
 		TempatLahir: userBody.TempatLahir,
 		Deskripsi:   userBody.Deskripsi,
 	}).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini", nil)
 		return
 	}
 

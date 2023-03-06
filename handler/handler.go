@@ -20,7 +20,7 @@ type handler struct {
 
 func Init(config config.Interface, db *gorm.DB, supClient supabasestorageuploader.SupabaseClientService) *handler {
 	rest := handler{
-		http:      gin.Default(),
+		http:      gin.New(),
 		config:    config,
 		db:        db,
 		supClient: supClient,
