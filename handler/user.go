@@ -110,9 +110,23 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 		return
 	}
 
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
 	var userDB entity.User
 
-	if err := h.db.Model(&userDB).Where("id = ?", userBody.Email).First(&userDB).Updates(entity.User{
+	if err := h.db.Model(&userDB).Where("id = ?", userID).First(&userDB).Updates(entity.User{
 		FullName:    userBody.FullName,
 		Lokasi:      userBody.Lokasi,
 		TempatLahir: userBody.TempatLahir,
