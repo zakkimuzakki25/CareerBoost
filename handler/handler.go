@@ -5,8 +5,10 @@ import (
 	"CareerBoost/sdk/config"
 	"fmt"
 	"net/http"
+	"time"
 
 	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -35,7 +37,18 @@ func (h *handler) registerRoutes() {
 
 	api := h.http.Group("api")
 
-	h.http.Use(middleware.CORS())
+	h.http.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"https://foo.com"},
+		AllowMethods:     []string{"PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "https://github.com"
+		},
+		MaxAge: 12 * time.Hour,
+	}))
+
 	api.Use(middleware.JwtMiddleware())
 
 	// Post

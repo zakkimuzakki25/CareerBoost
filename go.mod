@@ -11,6 +11,8 @@ require (
 	gorm.io/gorm v1.24.5
 )
 
+require github.com/gin-contrib/cors v1.4.0 // indirect
+
 require (
 	github.com/adityarizkyramadhan/supabase-storage-uploader v0.0.3
 	github.com/bytedance/sonic v1.8.0 // indirect
