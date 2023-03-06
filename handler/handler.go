@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -34,8 +33,7 @@ func Init(config config.Interface, db *gorm.DB, supClient supabasestorageuploade
 
 func (h *handler) registerRoutes() {
 
-	h.http.Use(cors.Default())
-
+	h.http.Use(middleware.CORS())
 	api := h.http.Group("api")
 
 	api.Use(middleware.JwtMiddleware())
