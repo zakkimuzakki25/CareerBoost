@@ -33,7 +33,7 @@ func Init(config config.Interface, db *gorm.DB, supClient supabasestorageuploade
 
 func (h *handler) registerRoutes() {
 
-	h.http.Use(middleware.CORS())
+	// h.http.Use(middleware.CORS())
 	api := h.http.Group("api")
 
 	api.Use(middleware.JwtMiddleware())
