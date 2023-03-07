@@ -11,7 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// delete this
 func main() {
 	cnfg := config.Init()
 	if err := cnfg.Load(".env"); err != nil {
