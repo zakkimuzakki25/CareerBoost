@@ -3,6 +3,7 @@ package handler
 import (
 	"CareerBoost/entity"
 	"CareerBoost/sdk/config"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -129,7 +130,7 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 	if err := h.db.Model(&userDB).Where("id = ?", userID).First(&userDB).Updates(entity.User{
 		FullName:     userBody.FullName,
 		Lokasi:       userBody.Lokasi,
-		TanggalLahir: &userBody.TanggalLahir,
+		TanggalLahir: userBody.TanggalLahir,
 		TempatLahir:  userBody.TempatLahir,
 		Deskripsi:    userBody.Deskripsi,
 	}).Error; err != nil {
@@ -214,10 +215,12 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		Lokasi:       userDB.Lokasi,
 		ProfilePhoto: userDB.ProfilePhoto,
 		Deskripsi:    userDB.Deskripsi,
-		TanggalLahir: *userDB.TanggalLahir,
+		TanggalLahir: userDB.TanggalLahir,
 		TempatLahir:  userDB.TempatLahir,
 		InterestID:   userDB.Interest,
 	}
+
+	fmt.Println(userDB.TanggalLahir)
 
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)
 }
