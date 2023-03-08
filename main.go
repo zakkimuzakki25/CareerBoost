@@ -38,10 +38,13 @@ func main() {
 	}
 
 	db := sql.GetInstance()
-	db.AutoMigrate(entity.User{}, entity.Interest{})
+	db.AutoMigrate(entity.User{}, entity.Interest{}, entity.Skill{})
 
 	if err := seedInterest(db); err != nil {
-		panic("GAGAL SEED")
+		panic("GAGAL SEED INTEREST")
+	}
+	if err := seedSkills(db); err != nil {
+		panic("GAGAL SEED INTEREST")
 	}
 
 	handler := handler.Init(cnfg, db, supClient)
@@ -70,6 +73,51 @@ func seedInterest(sql *gorm.DB) error {
 		},
 		{
 			Nama: entity.CyberSecurityInterest,
+		},
+	}
+
+	if err := sql.Create(&categories).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func seedSkills(sql *gorm.DB) error {
+	var categories []entity.Skill
+
+	if err := sql.First(&categories).Error; err != gorm.ErrRecordNotFound {
+		return err
+	}
+	categories = []entity.Skill{
+		{
+			Nama: entity.GoLang_skill,
+		},
+		{
+			Nama: entity.HTML_skill,
+		},
+		{
+			Nama: entity.CSS_skill,
+		},
+		{
+			Nama: entity.JavaScript_skill,
+		},
+		{
+			Nama: entity.Java_skill,
+		},
+		{
+			Nama: entity.MySQL_skill,
+		},
+		{
+			Nama: entity.PHP_skill,
+		},
+		{
+			Nama: entity.Phyton_skill,
+		},
+		{
+			Nama: entity.React_skill,
+		},
+		{
+			Nama: entity.Ruby_skill,
 		},
 	}
 
