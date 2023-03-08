@@ -5,6 +5,7 @@ import (
 	"CareerBoost/handler"
 	"CareerBoost/sdk/config"
 	"CareerBoost/sdk/database"
+	"fmt"
 	"log"
 
 	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
@@ -38,11 +39,14 @@ func main() {
 	}
 
 	db := sql.GetInstance()
-	db.AutoMigrate(entity.User{}, entity.Interest{}, entity.Course{})
+	db.AutoMigrate(entity.User{}, entity.Interest{}, entity.Course{}, entity.Course{}, entity.Skill{})
 
 	if err := seedInterest(db); err != nil {
-		panic("GAGAL SEED")
+		panic(err.Error())
 	}
+	// if err := entity.SeedSkills(db); err != nil {
+	// 	panic("GAGAL SEED")
+	// }
 
 	handler := handler.Init(cnfg, db, supClient)
 	handler.Run()
@@ -53,6 +57,8 @@ func seedInterest(sql *gorm.DB) error {
 	var categories []entity.Interest
 
 	if err := sql.First(&categories).Error; err != gorm.ErrRecordNotFound {
+		fmt.Println("error sini")
+		fmt.Println(err)
 		return err
 	}
 	categories = []entity.Interest{
