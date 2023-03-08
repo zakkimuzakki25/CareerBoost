@@ -37,8 +37,17 @@ func (h *handler) registerRoutes() {
 	api := h.http.Group("api")
 
 	api.Use(middleware.JwtMiddleware())
+	api.Use(h.userGetHome)
+
+	admin := h.http.Group("admin")
+	admin.Use(middleware.JwtMiddlewareAdmin())
 
 	// Post
+
+	admin.POST("/login", h.adminLogin)
+	admin.GET("/logout", h.adminLogout)
+	admin.POST("/mentor/post")
+
 	api.GET("/ping", h.ping)
 	h.http.POST("/user/register", h.userRegister)
 	h.http.POST("/user/login", h.userLogin)
@@ -46,7 +55,9 @@ func (h *handler) registerRoutes() {
 	api.POST("/profile", h.userUpdateProfile)
 	api.POST("/profile/photo/upload", h.userUploadPhotoProfile)
 	api.GET("/profile", h.userGetProfile)
-	api.GET("/", h.userGetHome)
+	api.GET("/")
+	api.GET("/mentorinfo", h.getAllMentor)
+	api.POST("/mentorinfo/data", h.getMentorData)
 
 	// v1.GET("/post/:post_id", h.getPost)
 	// v1.PUT("/post/:post_id", h.updatePost) // 1 -> aku mau update post yang id nya 1

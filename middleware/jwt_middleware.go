@@ -39,3 +39,25 @@ func JwtMiddleware() gin.HandlerFunc {
 		c.Set("user", claims)
 	}
 }
+
+func JwtMiddlewareAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tokenJwt, err := c.Cookie("token")
+		if err != nil {
+			ErrorResponse(c, http.StatusUnauthorized, "Unauthorized", nil)
+			c.Abort()
+			return
+		}
+
+		claims := entity.AdminClaims{}
+		jwtKey := os.Getenv("SECRET_KEY")
+
+		if err := config.DecodeToken(tokenJwt, &claims, jwtKey); err != nil {
+			ErrorResponse(c, http.StatusUnauthorized, "Unauthorized", nil)
+			c.Abort()
+			return
+		}
+
+		c.Set("user", claims)
+	}
+}
