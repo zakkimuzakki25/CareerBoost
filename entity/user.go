@@ -18,9 +18,9 @@ type User struct {
 	TanggalLahir *time.Time `json:"tanggal_lahir"`
 	TempatLahir  string     `json:"tempat_lahir" gorm:"type:VARCHAR(50)"`
 	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(50)"`
-	Courses      []Course   `json:"courses" gorm:"many2many:users_courses;"`
-	ProfilePhoto string     `json:"profile_photo"`
-	Deskripsi    string     `json:"deskripsi" gorm:"type:VARCHAR(250)"`
+	// Courses      []Course   `json:"courses" gorm:"many2many:users_courses;"`
+	ProfilePhoto string `json:"profile_photo"`
+	Deskripsi    string `json:"deskripsi" gorm:"type:VARCHAR(250)"`
 }
 
 type UserRegister struct {

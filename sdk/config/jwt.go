@@ -33,23 +33,23 @@ func GenerateTokenUser(payload entity.User) (string, error) {
 	return tokenJwtReal, nil
 }
 
-func GenerateTokenAdmin(payload entity.AdminLogin) (string, error) {
+// func GenerateTokenAdmin(payload entity.AdminLogin) (string, error) {
 
-	expStr := os.Getenv("JWT_EXP")
-	var exp time.Duration
-	exp, err := time.ParseDuration(expStr)
-	if expStr == "" || err != nil {
-		exp = time.Hour * 1
-	}
+// 	expStr := os.Getenv("JWT_EXP")
+// 	var exp time.Duration
+// 	exp, err := time.ParseDuration(expStr)
+// 	if expStr == "" || err != nil {
+// 		exp = time.Hour * 1
+// 	}
 
-	tokenJWT := jwt.NewWithClaims(jwt.SigningMethodHS256, entity.NewAdminClaims(payload.Username, exp))
-	tokenJwtReal, err := tokenJWT.SignedString([]byte(os.Getenv("SECRET_KEY")))
-	if err != nil {
-		return "", err
-	}
+// 	tokenJWT := jwt.NewWithClaims(jwt.SigningMethodHS256, entity.NewAdminClaims(payload.Username, exp))
+// 	tokenJwtReal, err := tokenJWT.SignedString([]byte(os.Getenv("SECRET_KEY")))
+// 	if err != nil {
+// 		return "", err
+// 	}
 
-	return tokenJwtReal, nil
-}
+// 	return tokenJwtReal, nil
+// }
 
 func DecodeToken(signedToken string, ptrClaims jwt.Claims, KEY string) error {
 

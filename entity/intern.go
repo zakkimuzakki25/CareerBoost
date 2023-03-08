@@ -1,4 +1,4 @@
 package entity
 
-type Intern struct {
-}
+// type Intern struct {
+// }

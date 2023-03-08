@@ -10,6 +10,6 @@ const (
 
 type Interest struct {
 	ID   uint   `gorm:"primaryKey"`
-	Nama string `gorm:"type:VARCHAR(30)"`
+	Nama string `gorm:"type:VARCHAR(255)"`
 	User []User `gorm:"many2many:users_interest"`
 }
