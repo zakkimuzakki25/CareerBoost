@@ -58,3 +58,30 @@ func (h *handler) getMentorExp(ctx *gin.Context) {
 
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", mentorDB, nil)
 }
+
+func (h *handler) addNewMentor(ctx *gin.Context) {
+	var mentorBody entity.MentorAdd
+	if err := h.BindBody(ctx, &mentorBody); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
+		return
+	}
+
+	var mentorDB entity.Mentor
+
+	mentorDB.ProfilePhoto = mentorBody.ProfilePhoto
+	mentorDB.FullName = mentorBody.FullName
+	mentorDB.Lokasi = mentorBody.Lokasi
+	mentorDB.Skill = mentorBody.Skill
+	mentorDB.Interest = mentorBody.Interest
+	mentorDB.Deskripsi = mentorBody.Deskripsi
+	mentorDB.Rate = mentorBody.Rate
+	mentorDB.Fee = mentorBody.Fee
+	mentorDB.Exp = mentorBody.Exp
+
+	if err := h.db.Create(&mentorDB).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "add mentor gagal", nil)
+		return
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "tambah mentor sukses", nil, nil)
+}

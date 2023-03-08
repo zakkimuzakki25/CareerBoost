@@ -44,9 +44,10 @@ func (h *handler) registerRoutes() {
 
 	// Post
 
-	admin.POST("/login", h.adminLogin)
+	h.http.POST("/admin/login", h.adminLogin)
 	admin.GET("/logout", h.adminLogout)
-	admin.POST("/mentor/post")
+	admin.POST("/mentor/post", h.addNewMentor)
+	admin.GET("/", h.ping)
 
 	api.GET("/ping", h.ping)
 	h.http.POST("/user/register", h.userRegister)
@@ -58,6 +59,7 @@ func (h *handler) registerRoutes() {
 	api.GET("/")
 	api.GET("/mentorinfo", h.getAllMentor)
 	api.POST("/mentorinfo/data", h.getMentorData)
+	api.POST("/mentorinfo/pengalaman", h.getMentorExp)
 
 	// v1.GET("/post/:post_id", h.getPost)
 	// v1.PUT("/post/:post_id", h.updatePost) // 1 -> aku mau update post yang id nya 1

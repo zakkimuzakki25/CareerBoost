@@ -42,7 +42,7 @@ func JwtMiddleware() gin.HandlerFunc {
 
 func JwtMiddlewareAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenJwt, err := c.Cookie("token")
+		tokenJwt, err := c.Cookie("tokenAdmin")
 		if err != nil {
 			ErrorResponse(c, http.StatusUnauthorized, "Unauthorized", nil)
 			c.Abort()
@@ -58,6 +58,6 @@ func JwtMiddlewareAdmin() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", claims)
+		c.Set("admin", claims)
 	}
 }

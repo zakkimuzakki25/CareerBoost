@@ -31,3 +31,16 @@ type MentorRespData struct {
 	Rate      int32      `json:"rate"`
 	Fee       float32    `json:"fee"`
 }
+
+type MentorAdd struct {
+	gorm.Model
+	ProfilePhoto string     `json:"profile_photo"`
+	FullName     string     `json:"full_name"`
+	Lokasi       string     `json:"lokasi"`
+	Skill        []Skill    `json:"skill"`
+	Interest     []Interest `json:"interest"`
+	Deskripsi    string     `json:"deskripsi"`
+	Rate         int32      `json:"rate"`
+	Fee          float32    `json:"fee"`
+	Exp          []Exp      `json:"exp"`
+}

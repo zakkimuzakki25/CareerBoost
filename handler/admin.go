@@ -43,7 +43,7 @@ func (h *handler) adminLogin(ctx *gin.Context) {
 	}
 
 	http.SetCookie(ctx.Writer, &http.Cookie{
-		Name:     "token",
+		Name:     "tokenAdmin",
 		Path:     "/admin",
 		Value:    tokenJwt,
 		HttpOnly: true,
@@ -55,8 +55,8 @@ func (h *handler) adminLogin(ctx *gin.Context) {
 // function logout
 func (h *handler) adminLogout(ctx *gin.Context) {
 	http.SetCookie(ctx.Writer, &http.Cookie{
-		Name:     "token",
-		Path:     "/",
+		Name:     "tokenAdmin",
+		Path:     "/admin",
 		Value:    "",
 		HttpOnly: true,
 		MaxAge:   -1,
