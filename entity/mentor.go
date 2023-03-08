@@ -2,6 +2,8 @@ package entity
 
 // import "gorm.io/gorm"
 
+// // import "gorm.io/gorm"
+
 // type Mentor struct {
 // 	gorm.Model
 // 	FullName     string     `json:"full_name" gorm:"type:VARCHAR(255);NOT NULL"`

@@ -13,7 +13,7 @@ type User struct {
 	Username     string     `json:"username" gorm:"type:VARCHAR(20);UNIQUE"`
 	Email        string     `json:"email" gorm:"type:VARCHAR(255);UNIQUE"`
 	Password     string     `json:"password" gorm:"type:VARCHAR(255);NOT NULL"`
-	Skills       []string   `json:"skills" gorm:"many2many:users_skill"`
+	Skills       []string   `json:"skills" gorm:"type:VARCHAR(20)"`
 	Interest     []Interest `json:"interestID" gorm:"many2many:users_interest"`
 	TanggalLahir *time.Time `json:"tanggal_lahir"`
 	TempatLahir  string     `json:"tempat_lahir" gorm:"type:VARCHAR(50)"`

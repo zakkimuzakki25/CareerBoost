@@ -2,6 +2,8 @@ package entity
 
 // import "gorm.io/gorm"
 
+// // import "gorm.io/gorm"
+
 // type Course struct {
 // 	gorm.Model
 // 	Intro    string

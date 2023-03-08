@@ -15,7 +15,7 @@ import (
 // 	jwt.RegisteredClaims
 // }
 
-func GenerateTokenUser(payload entity.User) (string, error) {
+func GenerateToken(payload entity.User) (string, error) {
 
 	expStr := os.Getenv("JWT_EXP")
 	var exp time.Duration

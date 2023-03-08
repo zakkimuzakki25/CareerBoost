@@ -73,7 +73,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 		return
 	}
 
-	tokenJwt, err := config.GenerateTokenUser(user)
+	tokenJwt, err := config.GenerateToken(user)
 	if err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "create token failed", nil)
 		return
@@ -144,13 +144,13 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 func (h *handler) userUploadPhotoProfile(ctx *gin.Context) {
 	file, err := ctx.FormFile("profile")
 	if err != nil {
-		h.ErrorResponse(ctx, 400, err.Error(), nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
 	link, err := h.supClient.Upload(file)
 	if err != nil {
-		h.ErrorResponse(ctx, 400, err.Error(), nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
