@@ -15,11 +15,11 @@ type User struct {
 	Password     string     `json:"password" gorm:"type:VARCHAR(255);NOT NULL"`
 	Skills       []string   `json:"skills" gorm:"many2many:users_skill"`
 	Interest     []Interest `json:"interestID" gorm:"many2many:users_interest"`
-	TanggalLahir time.Time  `json:"tanggal_lahir" gorm:"default:null"`
+	TanggalLahir *time.Time `json:"tanggal_lahir"`
 	TempatLahir  string     `json:"tempat_lahir" gorm:"type:VARCHAR(50)"`
 	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(50)"`
 	Courses      []Course   `json:"courses" gorm:"many2many:users_courses;"`
-	ProfilePhoto string     `json:"profile_photo" gorm:"default:null"`
+	ProfilePhoto string     `json:"profile_photo"`
 	Deskripsi    string     `json:"deskripsi" gorm:"type:VARCHAR(250)"`
 }
 
