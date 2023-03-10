@@ -21,13 +21,14 @@ type MentorReqByID struct {
 }
 
 type MentorRespData struct {
-	FullName  string     `json:"full_name"`
-	Skill     []Skill    `json:"skill"`
-	Lokasi    string     `json:"lokasi"`
-	Interest  []Interest `json:"interestID"`
-	Deskripsi string     `json:"deskripsi"`
-	Rate      int32      `json:"rate"`
-	Fee       int32      `json:"fee"`
+	ProfilePhoto string         `json:"profile_photo"`
+	FullName     string         `json:"full_name"`
+	Skill        []RespSkill    `json:"skill"`
+	Interest     []RespInterest `json:"interest"`
+	Lokasi       string         `json:"lokasi"`
+	Deskripsi    string         `json:"deskripsi"`
+	Rate         int32          `json:"rate"`
+	Fee          int32          `json:"fee"`
 }
 
 type MentorAdd struct {
@@ -41,4 +42,13 @@ type MentorAdd struct {
 	Rate         int32  `json:"rate"`
 	Fee          int32  `json:"fee"`
 	Exp          []Exp  `json:"exp"`
+}
+
+type MentorParam struct {
+	PostID int64 `uri:"post_id" gorm:"column:id"`
+	PaginationParam
+}
+
+type MentorFilter struct {
+	InterestID []uint `json:"Interestid"`
 }

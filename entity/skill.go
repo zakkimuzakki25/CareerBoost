@@ -19,3 +19,7 @@ type Skill struct {
 	User   []User   `gorm:"many2many:users_skill"`
 	Mentor []Mentor `gorm:"many2many:mentors_skill"`
 }
+
+type RespSkill struct {
+	Nama string `json:"nama"`
+}

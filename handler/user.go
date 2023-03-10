@@ -179,7 +179,7 @@ func (h *handler) userUploadPhotoProfile(ctx *gin.Context) {
 		return
 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Upload", link, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Update", nil, nil)
 }
 
 func (h *handler) userGetProfile(ctx *gin.Context) {

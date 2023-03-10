@@ -54,9 +54,10 @@ func (h *handler) registerRoutes() {
 	h.http.POST("/user/login", h.userLogin)
 	h.http.GET("/user/logout", h.userLogout)
 	api.POST("/profile", h.userUpdateProfile)
-	api.POST("/profile/photo/upload", h.userUploadPhotoProfile)
+	api.POST("/profile/photo/update", h.userUploadPhotoProfile)
 	api.GET("/profile", h.userGetProfile)
-	api.GET("/mentorinfo", h.getAllMentor)
+	api.GET("/mentorsinfo", h.getAllMentor, h.getMentorRekomendation)
+	api.POST("/mentorsinfo", h.getMentorFilter)
 	api.POST("/mentorinfo/data", h.getMentorData)
 	api.POST("/mentorinfo/pengalaman", h.getMentorExp)
 

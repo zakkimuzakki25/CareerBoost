@@ -14,3 +14,7 @@ type Interest struct {
 	User   []User   `gorm:"many2many:users_interest"`
 	Mentor []Mentor `gorm:"many2many:mentors_interest"`
 }
+
+type RespInterest struct {
+	Nama string `json:"nama"`
+}
