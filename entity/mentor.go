@@ -13,6 +13,7 @@ type Mentor struct {
 	Rate         int32      `json:"rate"`
 	Fee          int32      `json:"fee"`
 	Mentee       []User     `json:"mentee" gorm:"foreignkey:MentorID"`
+	Exp          []Exp      `json:"exp"`
 }
 
 type MentorReqByID struct {
@@ -39,5 +40,5 @@ type MentorAdd struct {
 	Deskripsi    string `json:"deskripsi"`
 	Rate         int32  `json:"rate"`
 	Fee          int32  `json:"fee"`
-	Exp          Exp    `json:"exp"`
+	Exp          []Exp  `json:"exp"`
 }

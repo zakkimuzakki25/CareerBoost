@@ -68,9 +68,7 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 		return
 	}
 
-	var exp []entity.Exp
 	var mentorDB entity.Mentor
-
 	mentorDB.ProfilePhoto = mentorBody.ProfilePhoto
 	mentorDB.FullName = mentorBody.FullName
 	mentorDB.Lokasi = mentorBody.Lokasi
@@ -78,19 +76,23 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 	mentorDB.Rate = mentorBody.Rate
 	mentorDB.Fee = mentorBody.Fee
 
-	if err := h.db.Create(exp).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+	var exps []entity.Exp
+	for _, exp := range mentorBody.Exp {
+		exps = append(exps, entity.Exp{
+			Logo:       exp.Logo,
+			Skill:      exp.Skill,
+			Perusahaan: exp.Perusahaan,
+		})
+	}
+
+	var skills []entity.Skill
+	if err := h.db.Find(&skills, mentorBody.Skill).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "skill not found", nil)
 		return
 	}
 
-	var skill []entity.Skill
-	if err := h.db.Find(&skill, mentorBody.Skill).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "interest not found", nil)
-		return
-	}
-
-	var interest []entity.Interest
-	if err := h.db.Find(&interest, mentorBody.Interest).Error; err != nil {
+	var interests []entity.Interest
+	if err := h.db.Find(&interests, mentorBody.Interest).Error; err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "interest not found", nil)
 		return
 	}
@@ -100,17 +102,17 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 		return
 	}
 
-	if err := h.db.Model(&mentorDB).Association("Exp").Append(exp); err != nil {
+	if err := h.db.Model(&mentorDB).Association("Exp").Append(exps); err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "Gagal nambah exp", nil)
 		return
 	}
 
-	if err := h.db.Model(&mentorDB).Association("Interest").Append(interest); err != nil {
+	if err := h.db.Model(&mentorDB).Association("Interest").Append(interests); err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
-	if err := h.db.Model(&mentorDB).Association("Skill").Append(skill); err != nil {
+	if err := h.db.Model(&mentorDB).Association("Skill").Append(skills); err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "skill not added", nil)
 		return
 	}
