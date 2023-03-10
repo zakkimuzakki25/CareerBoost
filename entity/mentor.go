@@ -45,10 +45,14 @@ type MentorAdd struct {
 }
 
 type MentorParam struct {
-	PostID int64 `uri:"post_id" gorm:"column:id"`
+	PostID int64 `uri:"mentor_id" gorm:"column:id"`
 	PaginationParam
 }
 
 type MentorFilter struct {
 	InterestID []uint `json:"Interestid"`
+}
+
+type MentorSearch struct {
+	Key string `json:"key"`
 }

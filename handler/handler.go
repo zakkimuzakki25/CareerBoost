@@ -57,13 +57,11 @@ func (h *handler) registerRoutes() {
 	api.POST("/profile/photo/update", h.userUploadPhotoProfile)
 	api.GET("/profile", h.userGetProfile)
 	api.GET("/mentorsinfo", h.getMentorRekomendation, h.getAllMentor)
-	api.POST("/mentorsinfo", h.getMentorFilter)
+	api.POST("/mentorsinfo/filter", h.getMentorFilter)
+	api.POST("/mentorsinfo/search", h.getMentorSearch)
 	api.POST("/mentorinfo/data", h.getMentorData)
 	api.POST("/mentorinfo/pengalaman", h.getMentorExp)
 
-	// v1.GET("/post/:post_id", h.getPost)
-	// v1.PUT("/post/:post_id", h.updatePost) // 1 -> aku mau update post yang id nya 1
-	// v1.DELETE("/post/:post_id", h.deletePost)
 }
 
 func (h *handler) ping(ctx *gin.Context) {
