@@ -61,7 +61,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 	if err := h.db.Where("email = ?", userBody.Email).First(&user).Error; err != nil {
 
 		if err := h.db.Where("username = ?", userBody.Email).First(&user).Error; err != nil {
-			h.ErrorResponse(ctx, http.StatusBadRequest, "Email atau Password salah", nil)
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Account not found", nil)
 			return
 		}
 

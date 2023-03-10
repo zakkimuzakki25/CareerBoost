@@ -24,7 +24,7 @@ type MentorRespData struct {
 	FullName  string     `json:"full_name"`
 	Skill     []Skill    `json:"skill"`
 	Lokasi    string     `json:"lokasi"`
-	Interest  []Interest `json:"interest"`
+	Interest  []Interest `json:"interestID"`
 	Deskripsi string     `json:"deskripsi"`
 	Rate      int32      `json:"rate"`
 	Fee       int32      `json:"fee"`

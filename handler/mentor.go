@@ -11,13 +11,19 @@ import (
 func (h *handler) getAllMentor(ctx *gin.Context) {
 	var mentorDB []entity.Mentor
 
+	err := h.db.Find(&mentorDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", mentorDB, nil)
 }
 
 func (h *handler) getMentorData(ctx *gin.Context) {
 	var mentorBody entity.MentorReqByID
 	if err := h.BindBody(ctx, &mentorBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body", nil)
 		return
 	}
 
@@ -87,7 +93,7 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 
 	var skills []entity.Skill
 	if err := h.db.Find(&skills, mentorBody.Skill).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "skill not found", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "interest not found", nil)
 		return
 	}
 
@@ -108,7 +114,7 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 	}
 
 	if err := h.db.Model(&mentorDB).Association("Interest").Append(interests); err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "Gagal nambah Interest", nil)
 		return
 	}
 
