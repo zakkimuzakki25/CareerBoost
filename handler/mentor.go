@@ -2,6 +2,7 @@ package handler
 
 import (
 	"CareerBoost/entity"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -62,24 +63,55 @@ func (h *handler) getMentorExp(ctx *gin.Context) {
 func (h *handler) addNewMentor(ctx *gin.Context) {
 	var mentorBody entity.MentorAdd
 	if err := h.BindBody(ctx, &mentorBody); err != nil {
+		fmt.Println(err)
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
 		return
 	}
 
+	var exp []entity.Exp
 	var mentorDB entity.Mentor
 
 	mentorDB.ProfilePhoto = mentorBody.ProfilePhoto
 	mentorDB.FullName = mentorBody.FullName
 	mentorDB.Lokasi = mentorBody.Lokasi
-	mentorDB.Skill = mentorBody.Skill
-	mentorDB.Interest = mentorBody.Interest
 	mentorDB.Deskripsi = mentorBody.Deskripsi
 	mentorDB.Rate = mentorBody.Rate
 	mentorDB.Fee = mentorBody.Fee
-	mentorDB.Exp = mentorBody.Exp
+
+	if err := h.db.Create(exp).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	var skill []entity.Skill
+	if err := h.db.Find(&skill, mentorBody.Skill).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "interest not found", nil)
+		return
+	}
+
+	var interest []entity.Interest
+	if err := h.db.Find(&interest, mentorBody.Interest).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "interest not found", nil)
+		return
+	}
 
 	if err := h.db.Create(&mentorDB).Error; err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "add mentor gagal", nil)
+		return
+	}
+
+	if err := h.db.Model(&mentorDB).Association("Exp").Append(exp); err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "Gagal nambah exp", nil)
+		return
+	}
+
+	if err := h.db.Model(&mentorDB).Association("Interest").Append(interest); err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	if err := h.db.Model(&mentorDB).Association("Skill").Append(skill); err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "skill not added", nil)
 		return
 	}
 
