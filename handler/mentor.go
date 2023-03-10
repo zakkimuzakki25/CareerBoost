@@ -89,7 +89,43 @@ func (h *handler) getMentorRekomendation(ctx *gin.Context) {
 		return
 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Success", mentorDB, nil)
+	var mentors []entity.MentorRespData
+	for _, mentor := range mentorDB {
+
+		var resp entity.MentorRespData
+		resp.ProfilePhoto = mentor.ProfilePhoto
+		resp.FullName = mentor.FullName
+		resp.Lokasi = mentor.Lokasi
+		resp.Deskripsi = mentor.Deskripsi
+		resp.Rate = mentor.Rate
+		resp.Fee = mentor.Fee
+
+		var skill []entity.Skill
+		if err := h.db.Model(&mentor).Association("Skill").Find(&skill); err != nil {
+			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+			return
+		}
+		var skills []entity.RespSkill
+		for _, s := range skill {
+			skills = append(skills, entity.RespSkill{Nama: s.Nama})
+		}
+		resp.Skill = skills
+
+		var interest []entity.Interest
+		if err := h.db.Model(&mentor).Association("Interest").Find(&interest); err != nil {
+			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+			return
+		}
+		var interests []entity.RespInterest
+		for _, s := range interest {
+			interests = append(interests, entity.RespInterest{Nama: s.Nama})
+		}
+		resp.Interest = interests
+
+		mentors = append(mentors, resp)
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", mentors, nil)
 }
 
 func (h *handler) getMentorData(ctx *gin.Context) {

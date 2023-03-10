@@ -39,14 +39,14 @@ type UserLogin struct {
 }
 
 type UserProfilePage struct {
-	Email        string     `json:"email"`
-	FullName     string     `json:"full_name"`
-	Lokasi       string     `json:"lokasi"`
-	ProfilePhoto string     `json:"profile_photo"`
-	Deskripsi    string     `json:"deskripsi"`
-	TanggalLahir time.Time  `json:"tanggal_lahir"`
-	TempatLahir  string     `json:"tempat_lahir"`
-	InterestID   []Interest `json:"interestID"`
+	Email        string         `json:"email"`
+	FullName     string         `json:"full_name"`
+	Lokasi       string         `json:"lokasi"`
+	ProfilePhoto string         `json:"profile_photo"`
+	Deskripsi    string         `json:"deskripsi"`
+	TanggalLahir time.Time      `json:"tanggal_lahir"`
+	TempatLahir  string         `json:"tempat_lahir"`
+	InterestID   []RespInterest `json:"interest"`
 }
 
 type UserHome struct {

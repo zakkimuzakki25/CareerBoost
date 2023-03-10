@@ -210,6 +210,16 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		return
 	}
 
+	var interest []entity.Interest
+	if err := h.db.Model(&userDB).Association("Interest").Find(&interest); err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+	var interests []entity.RespInterest
+	for _, s := range interest {
+		interests = append(interests, entity.RespInterest{Nama: s.Nama})
+	}
+
 	userResp := entity.UserProfilePage{
 		Email:        userDB.Email,
 		FullName:     userDB.FullName,
@@ -218,7 +228,7 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		Deskripsi:    userDB.Deskripsi,
 		TanggalLahir: userDB.TanggalLahir,
 		TempatLahir:  userDB.TempatLahir,
-		InterestID:   userDB.Interest,
+		InterestID:   interests,
 	}
 
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", userResp, nil)
