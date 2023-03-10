@@ -4,8 +4,9 @@ import "gorm.io/gorm"
 
 type Exp struct {
 	gorm.Model
-	Logo       string `json:"logo"`
-	Skill      string `json:"skill"`
-	Perusahaan string `json:"perusahaan"`
-	MentorID   uint   `json:"mentor_id"`
+	Logo       string   `json:"logo"`
+	Skill      string   `json:"skill"`
+	Perusahaan string   `json:"perusahaan"`
+	Mentor     []Mentor `json:"mentor" gorm:"foreignkey:MentorID"`
+	MentorID   uint
 }

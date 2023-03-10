@@ -4,5 +4,8 @@ import "gorm.io/gorm"
 
 type Playlist struct {
 	gorm.Model
-	Video []Video
+	Nama  string  `gorm:"type:VARCHAR(55)"`
+	Video []Video `json:"video" gorm:"foreignKey:PlaylistID"`
+	// Course   Course  `json:"course" gorm:"foreignKey:CourseID"`
+	CourseID uint
 }

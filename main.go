@@ -5,6 +5,7 @@ import (
 	"CareerBoost/handler"
 	"CareerBoost/sdk/config"
 	"CareerBoost/sdk/database"
+	"fmt"
 	"log"
 
 	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
@@ -38,19 +39,21 @@ func main() {
 	}
 
 	db := sql.GetInstance()
-	db.AutoMigrate(
-		entity.User{},
-		entity.Interest{},
-		entity.Skill{},
-		entity.Course{},
-		entity.Mentor{},
-		entity.Video{},
-	)
+	db.AutoMigrate(entity.User{})
+	db.AutoMigrate(entity.Interest{})
+	db.AutoMigrate(entity.Skill{})
+	db.AutoMigrate(entity.Mentor{})
+	db.AutoMigrate(entity.Exp{})
+	db.AutoMigrate(entity.Video{})
+	db.AutoMigrate(entity.Playlist{})
+	db.AutoMigrate(entity.Course{})
 
 	if err := seedInterest(db); err != nil {
+		fmt.Println(err)
 		panic("GAGAL SEED INTEREST")
 	}
 	if err := seedSkills(db); err != nil {
+		fmt.Println(err)
 		panic("GAGAL SEED INTEREST")
 	}
 

@@ -9,7 +9,8 @@ const (
 )
 
 type Interest struct {
-	ID   uint   `gorm:"primaryKey"`
-	Nama string `gorm:"type:VARCHAR(30)"`
-	User []User `gorm:"many2many:users_interest"`
+	ID     uint     `gorm:"primaryKey"`
+	Nama   string   `gorm:"type:VARCHAR(30)"`
+	User   []User   `gorm:"many2many:users_interest"`
+	Mentor []Mentor `gorm:"many2many:mentors_interest"`
 }

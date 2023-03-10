@@ -13,14 +13,16 @@ type User struct {
 	Username     string     `json:"username" gorm:"type:VARCHAR(20);UNIQUE"`
 	Email        string     `json:"email" gorm:"type:VARCHAR(255);UNIQUE"`
 	Password     string     `json:"password" gorm:"type:VARCHAR(255);NOT NULL"`
-	Skills       []Skill    `json:"skills" gorm:"many2many:users_skill"`
+	Skill        []Skill    `json:"skillID" gorm:"many2many:users_skill;default:null"`
 	Interest     []Interest `json:"interestID" gorm:"many2many:users_interest"`
-	TanggalLahir *time.Time `json:"tanggal_lahir"`
-	TempatLahir  string     `json:"tempat_lahir" gorm:"type:VARCHAR(50)"`
-	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(50)"`
-	// Courses      []Course   `json:"courses" gorm:"many2many:users_courses;"`
-	ProfilePhoto string `json:"profile_photo"`
-	Deskripsi    string `json:"deskripsi" gorm:"type:VARCHAR(250)"`
+	TanggalLahir time.Time  `json:"tanggal_lahir" gorm:"default:null"`
+	TempatLahir  string     `json:"tempat_lahir" gorm:"type:VARCHAR(50);default:null"`
+	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(50);default:null"`
+	Course       []Course   `json:"course" gorm:"many2many:users_course;default:null"`
+	ProfilePhoto string     `json:"profile_photo" gorom:"default:null"`
+	Deskripsi    string     `json:"deskripsi" gorm:"type:VARCHAR(250);default:null"`
+	Mentor       Mentor     `json:"mentor" gorm:"foreignKey:MentorID;default:null"`
+	MentorID     uint       `json:"mentor_id" gorm:"default:null"`
 }
 
 type UserRegister struct {

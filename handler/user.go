@@ -35,7 +35,7 @@ func (h *handler) userRegister(ctx *gin.Context) {
 	userDB.Password = string(hashPW)
 
 	if err := h.db.Create(&userDB).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "Email atau Username tidak tersedia", nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "Email or username not available", nil)
 		return
 	}
 
@@ -86,7 +86,9 @@ func (h *handler) userLogin(ctx *gin.Context) {
 		HttpOnly: true,
 	})
 
-	h.SuccessResponse(ctx, http.StatusOK, "Login Berhasil", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Login Berhasil", gin.H{
+		"token": tokenJwt,
+	}, nil)
 }
 
 // function logout
@@ -129,7 +131,7 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 	if err := h.db.Model(&userDB).Where("id = ?", userID).First(&userDB).Updates(entity.User{
 		FullName:     userBody.FullName,
 		Lokasi:       userBody.Lokasi,
-		TanggalLahir: &userBody.TanggalLahir,
+		TanggalLahir: userBody.TanggalLahir,
 		TempatLahir:  userBody.TempatLahir,
 		Deskripsi:    userBody.Deskripsi,
 	}).Error; err != nil {
@@ -214,7 +216,7 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		Lokasi:       userDB.Lokasi,
 		ProfilePhoto: userDB.ProfilePhoto,
 		Deskripsi:    userDB.Deskripsi,
-		TanggalLahir: *userDB.TanggalLahir,
+		TanggalLahir: userDB.TanggalLahir,
 		TempatLahir:  userDB.TempatLahir,
 		InterestID:   userDB.Interest,
 	}

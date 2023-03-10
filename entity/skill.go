@@ -14,7 +14,8 @@ const (
 )
 
 type Skill struct {
-	ID   uint   `gorm:"primaryKey"`
-	Nama string `gorm:"type:VARCHAR(30)"`
-	User []User `gorm:"many2many:users_skill"`
+	ID     uint     `gorm:"primaryKey"`
+	Nama   string   `gorm:"type:VARCHAR(30)"`
+	User   []User   `gorm:"many2many:users_skill"`
+	Mentor []Mentor `gorm:"many2many:mentors_skill"`
 }
