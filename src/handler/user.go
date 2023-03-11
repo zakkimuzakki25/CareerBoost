@@ -14,7 +14,7 @@ func (h *handler) userRegister(ctx *gin.Context) {
 	var userBody entity.UserRegister
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Kolom harus diisi", nil)
 		return
 	}
 
@@ -52,7 +52,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 	var userBody entity.UserLogin
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Kolom harus diisi", nil)
 		return
 	}
 
@@ -61,7 +61,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 	if err := h.db.Where("email = ?", userBody.Email).First(&user).Error; err != nil {
 
 		if err := h.db.Where("username = ?", userBody.Email).First(&user).Error; err != nil {
-			h.ErrorResponse(ctx, http.StatusBadRequest, "Account not found", nil)
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Akun tidak ditemukan", nil)
 			return
 		}
 
@@ -95,7 +95,7 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 	var userBody entity.UserProfilePage
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request update", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Kolom harus diisi", nil)
 		return
 	}
 
@@ -126,7 +126,7 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 		return
 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Update", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Update berhasil", nil, nil)
 }
 
 // upload foto
@@ -166,7 +166,7 @@ func (h *handler) userUploadPhotoProfile(ctx *gin.Context) {
 		return
 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Update", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Update berhasil", nil, nil)
 }
 
 func (h *handler) userGetProfile(ctx *gin.Context) {
@@ -282,7 +282,7 @@ func (h *handler) UserAddMentor(ctx *gin.Context) {
 		return
 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Subscribe", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Sukses berlangganan", nil, nil)
 }
 
 func (h *handler) userGetMentor(ctx *gin.Context) {
@@ -347,7 +347,7 @@ func (h *handler) UserAddMagang(ctx *gin.Context) {
 		return
 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Subscribe", nil, nil)
+	h.SuccessResponse(ctx, http.StatusOK, "Sukses berlangganan", nil, nil)
 }
 
 func (h *handler) userGetMagang(ctx *gin.Context) {

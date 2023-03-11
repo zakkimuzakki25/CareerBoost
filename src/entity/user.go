@@ -28,16 +28,16 @@ type User struct {
 }
 
 type UserRegister struct {
-	FullName   string `json:"full_name" gorm:"NOT NULL"`
-	Username   string `json:"username" gorm:"NOT NULL"`
-	Email      string `json:"email" gorm:"NOT NULL"`
-	Password   string `json:"password" gorm:"NOT NULL"`
-	InterestID []uint `json:"interestID" gorm:"NOT NULL"`
+	FullName   string `json:"full_name" gorm:"NOT NULL" binding:"required"`
+	Username   string `json:"username" gorm:"NOT NULL" binding:"required"`
+	Email      string `json:"email" gorm:"NOT NULL" binding:"required"`
+	Password   string `json:"password" gorm:"NOT NULL" binding:"required"`
+	InterestID []uint `json:"interestID" gorm:"NOT NULL" binding:"required"`
 }
 
 type UserLogin struct {
-	Email    string `json:"email" gorm:"NOT NULL"`
-	Password string `json:"password" gorm:"NOT NULL"`
+	Email    string `json:"email" gorm:"NOT NULL" binding:"required"`
+	Password string `json:"password" gorm:"NOT NULL" binding:"required"`
 }
 
 type UserProfilePage struct {

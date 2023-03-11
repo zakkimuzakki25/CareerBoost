@@ -131,7 +131,7 @@ func (h *handler) getMentorRekomendation(ctx *gin.Context) {
 func (h *handler) getMentorData(ctx *gin.Context) {
 	var mentorBody entity.MentorReqByID
 	if err := h.BindBody(ctx, &mentorBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal bindbody", nil)
 		return
 	}
 

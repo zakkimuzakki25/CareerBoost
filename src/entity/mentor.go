@@ -57,3 +57,11 @@ type MentorParam struct {
 	PostID int64 `uri:"mentor_id" gorm:"column:id"`
 	PaginationParam
 }
+
+type Exp struct {
+	gorm.Model
+	Logo       string `json:"logo"`
+	Skill      string `json:"skill"`
+	Perusahaan string `json:"perusahaan"`
+	MentorID   uint
+}

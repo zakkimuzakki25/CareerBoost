@@ -91,7 +91,7 @@ func (h *handler) getAllMagang(ctx *gin.Context) {
 	if magangs != nil {
 		h.SuccessResponse(ctx, http.StatusOK, "Success", magangs, &magangParam.PaginationParam)
 	} else {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "Magang Tidak Ditemukan", nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "Lowongan magang tidak ditemukan", nil)
 		return
 	}
 }
@@ -180,7 +180,7 @@ func (h *handler) getMagangRekomendation(ctx *gin.Context) {
 	if magangs != nil {
 		h.SuccessResponse(ctx, http.StatusOK, "Success", magangs, &magangParam.PaginationParam)
 	} else {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "Magang Tidak Ditemukan", nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "Lowongan magang tidak ditemukan", nil)
 		return
 	}
 }
@@ -338,7 +338,7 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 	if magangs != nil {
 		h.SuccessResponse(ctx, http.StatusOK, "Success", magangs, &magangParam.PaginationParam)
 	} else {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "Magang Tidak Ditemukan", nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "Lowongan magang tidak ditemukan", nil)
 		return
 	}
 }
