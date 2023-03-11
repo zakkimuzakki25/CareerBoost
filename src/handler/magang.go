@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"CareerBoost/entity"
+	"CareerBoost/src/entity"
 	"fmt"
 	"net/http"
 

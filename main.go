@@ -1,10 +1,10 @@
 package main
 
 import (
-	"CareerBoost/entity"
-	"CareerBoost/handler"
 	"CareerBoost/sdk/config"
 	"CareerBoost/sdk/database"
+	"CareerBoost/src/entity"
+	"CareerBoost/src/handler"
 	"fmt"
 	"log"
 

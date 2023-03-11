@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"CareerBoost/middleware"
 	"CareerBoost/sdk/config"
+	"CareerBoost/sdk/middleware"
 	"fmt"
 	"net/http"
 

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"CareerBoost/entity"
+	"CareerBoost/src/entity"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

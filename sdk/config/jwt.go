@@ -1,7 +1,7 @@
 package config
 
 import (
-	"CareerBoost/entity"
+	"CareerBoost/src/entity"
 	"errors"
 	"fmt"
 	"os"
@@ -9,11 +9,6 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 )
-
-// type JWTClaim struct {
-// 	Username string
-// 	jwt.RegisteredClaims
-// }
 
 func GenerateToken(payload entity.User) (string, error) {
 

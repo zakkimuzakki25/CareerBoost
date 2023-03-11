@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"CareerBoost/entity"
 	"CareerBoost/sdk/config"
+	"CareerBoost/src/entity"
 	"net/http"
 	"os"
 
