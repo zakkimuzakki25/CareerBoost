@@ -18,6 +18,7 @@ type Skill struct {
 	Nama   string   `gorm:"type:VARCHAR(30)"`
 	User   []User   `gorm:"many2many:users_skill"`
 	Mentor []Mentor `gorm:"many2many:mentors_skill"`
+	Magang []Magang `gorm:"many2many:magangs_skill"`
 }
 
 type RespSkill struct {

@@ -32,6 +32,9 @@ type MentorRespData struct {
 	Deskripsi    string         `json:"deskripsi"`
 	Rate         int32          `json:"rate"`
 	Fee          int32          `json:"fee"`
+	WA           string         `json:"wa"`
+	IG           string         `json:"ig"`
+	Email        string         `json:"email"`
 }
 
 type MentorAdd struct {
@@ -45,17 +48,12 @@ type MentorAdd struct {
 	Rate         int32  `json:"rate"`
 	Fee          int32  `json:"fee"`
 	Exp          []Exp  `json:"exp"`
+	WA           string `json:"wa"`
+	IG           string `json:"ig"`
+	Email        string `json:"email"`
 }
 
 type MentorParam struct {
 	PostID int64 `uri:"mentor_id" gorm:"column:id"`
 	PaginationParam
-}
-
-type MentorFilter struct {
-	InterestID []uint `json:"Interestid"`
-}
-
-type MentorSearch struct {
-	Key string `json:"key"`
 }

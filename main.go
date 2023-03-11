@@ -47,6 +47,7 @@ func main() {
 	db.AutoMigrate(entity.Video{})
 	db.AutoMigrate(entity.Playlist{})
 	db.AutoMigrate(entity.Course{})
+	db.AutoMigrate(entity.Magang{})
 
 	if err := seedInterest(db); err != nil {
 		fmt.Println(err)

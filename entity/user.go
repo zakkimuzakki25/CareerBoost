@@ -23,6 +23,8 @@ type User struct {
 	Deskripsi    string     `json:"deskripsi" gorm:"type:VARCHAR(250);default:null"`
 	Mentor       Mentor     `json:"mentor" gorm:"foreignKey:MentorID;default:null"`
 	MentorID     uint       `json:"mentor_id" gorm:"default:null"`
+	Magang       Magang     `json:"magang" gorm:"foreignKey:MentorID;default:null"`
+	MagangID     uint       `json:"magang_id" gorm:"default:null"`
 }
 
 type UserRegister struct {

@@ -91,19 +91,6 @@ func (h *handler) userLogin(ctx *gin.Context) {
 	}, nil)
 }
 
-// function logout
-func (h *handler) userLogout(ctx *gin.Context) {
-	http.SetCookie(ctx.Writer, &http.Cookie{
-		Name:     "token",
-		Path:     "/",
-		Value:    "",
-		HttpOnly: true,
-		MaxAge:   -1,
-	})
-
-	h.SuccessResponse(ctx, http.StatusOK, "Logout Berhasil", nil, nil)
-}
-
 func (h *handler) userUpdateProfile(ctx *gin.Context) {
 	var userBody entity.UserProfilePage
 
@@ -327,4 +314,69 @@ func (h *handler) userGetMentor(ctx *gin.Context) {
 		return
 	}
 	h.SuccessResponse(ctx, http.StatusOK, "Succes", mentors, nil)
+}
+
+func (h *handler) UserAddMagang(ctx *gin.Context) {
+	var userBody entity.MagangReqByID
+
+	if err := h.BindBody(ctx, &userBody); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request update", nil)
+		return
+	}
+
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
+	var userDB entity.User
+
+	if err := h.db.Model(&userDB).Where("id = ?", userID).First(&userDB).Updates(entity.User{
+		MagangID: userBody.ID,
+	}).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini", nil)
+		return
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Succesfully Subscribe", nil, nil)
+}
+
+func (h *handler) userGetMagang(ctx *gin.Context) {
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
+	var userDB entity.User
+	err := h.db.Where("id = ?", userID).Take(&userDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	var magangs entity.Magang = userDB.Magang
+	errr := h.db.Where("id = ?", userDB.MagangID).Take(&magangs).Error
+	if errr != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+	h.SuccessResponse(ctx, http.StatusOK, "Succes", magangs, nil)
 }

@@ -21,7 +21,7 @@ type PaginationParam struct {
 
 func (pp *PaginationParam) FormatPagination() {
 	if pp.Limit == 0 {
-		pp.Limit = 5
+		pp.Limit = 3
 	}
 
 	if pp.Page == 0 {
@@ -39,4 +39,9 @@ func (pp *PaginationParam) ProcessPagination(totalElements int64) {
 	if totalElements < pp.Limit {
 		pp.CurrentElements = pp.TotalElements
 	}
+}
+
+type Filter struct {
+	InterestID []uint `json:"Interestid"`
+	Key        string `json:"key"`
 }

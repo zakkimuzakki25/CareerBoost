@@ -45,25 +45,30 @@ func (h *handler) registerRoutes() {
 	// Post
 
 	h.http.POST("/admin/login", h.adminLogin)
-	admin.GET("/logout", h.adminLogout)
+	api.GET("/logout", h.adminLogout)
 	admin.POST("/mentor/post", h.addNewMentor)
+	admin.POST("/magang/post", h.addNewMagang)
 	admin.GET("/", h.ping)
 
 	api.GET("/", h.ping)
 	h.http.POST("/user/register", h.userRegister)
 	h.http.POST("/user/login", h.userLogin)
-	h.http.GET("/user/logout", h.userLogout)
-	api.POST("/profile", h.userUpdateProfile)
-	api.POST("/profile/photo/update", h.userUploadPhotoProfile)
+	api.PUT("/profile", h.userUpdateProfile)
+	api.PUT("/profile/photo/update", h.userUploadPhotoProfile)
 	api.GET("/profile", h.userGetProfile)
-	api.GET("/profile/history", h.userGetMentor)
-	api.GET("/profile/langganan", h.userGetMentor)
+	api.GET("/profile/history", h.userGetMagang, h.userGetMentor)
+	api.GET("/profile/langganan", h.userGetMagang, h.userGetMentor)
+
 	api.GET("/mentorsinfo", h.getMentorRekomendation, h.getAllMentor)
-	api.POST("/mentorsinfo/filter", h.getMentorFilter)
-	api.POST("/mentorsinfo/search", h.getMentorSearch)
+	api.POST("/mentorsinfo", h.getMentorRekomendation, h.getMentorFilter)
 	api.POST("/mentorinfo/data", h.getMentorData)
 	api.POST("/mentorinfo/pengalaman", h.getMentorExp)
 	api.POST("/mentorinfo/checkout", h.UserAddMentor)
+
+	api.GET("/magangsinfo", h.getMagangRekomendation, h.getAllMagang)
+	api.POST("/magangsinfo", h.getMagangRekomendation, h.getMagangFilter)
+	api.POST("/maganginfo/data", h.getMagangRekomendation, h.getMagangData)
+	api.POST("/maganginfo/checkout", h.UserAddMagang)
 
 }
 
