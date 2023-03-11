@@ -54,6 +54,11 @@ type UserHome struct {
 	ProfilePhoto string `json:"profile_photo"`
 }
 
+type UserMentorHistory struct {
+	Interest string `json:"interest"`
+	FullName string `json:"full_name"`
+}
+
 type UserClaims struct {
 	ID uint `json:"id"`
 	jwt.RegisteredClaims

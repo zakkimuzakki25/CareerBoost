@@ -14,6 +14,9 @@ type Mentor struct {
 	Fee          int32      `json:"fee"`
 	Mentee       []User     `json:"mentee" gorm:"foreignkey:MentorID"`
 	Exp          []Exp      `json:"exp"`
+	WA           string     `json:"wa"`
+	IG           string     `json:"ig"`
+	Email        string     `json:"email"`
 }
 
 type MentorReqByID struct {
