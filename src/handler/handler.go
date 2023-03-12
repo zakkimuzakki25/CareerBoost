@@ -51,7 +51,7 @@ func (h *handler) registerRoutes() {
 	admin.POST("/course/post", h.addNewCourse)
 	admin.GET("/", h.ping)
 
-	api.GET("/", h.ping)
+	h.http.GET("/", h.ping)
 	h.http.POST("/user/register", h.userRegister)
 	h.http.POST("/user/login", h.userLogin)
 	api.PUT("/profile", h.userUpdateProfile)
@@ -60,16 +60,21 @@ func (h *handler) registerRoutes() {
 	api.GET("/profile/history", h.userGetMagang, h.userGetMentor)
 	api.GET("/profile/langganan", h.userGetMagang, h.userGetMentor)
 
-	api.GET("/mentorsinfo", h.getMentorRekomendation, h.getAllMentor)
-	api.POST("/mentorsinfo", h.getMentorRekomendation, h.getMentorFilter)
+	api.GET("/mentorsinfo", h.getMentorRecomendation, h.getAllMentor)
+	api.POST("/mentorsinfo", h.getMentorRecomendation, h.getMentorFilter)
 	api.POST("/mentorinfo/data", h.getMentorData)
 	api.POST("/mentorinfo/pengalaman", h.getMentorExp)
 	api.POST("/mentorinfo/checkout", h.UserAddMentor)
 
-	api.GET("/magangsinfo", h.getMagangRekomendation, h.getAllMagang)
-	api.POST("/magangsinfo", h.getMagangRekomendation, h.getMagangFilter)
-	api.POST("/maganginfo/data", h.getMagangRekomendation, h.getMagangData)
+	api.GET("/magangsinfo", h.getMagangRecomendation, h.getAllMagang)
+	api.POST("/magangsinfo", h.getMagangRecomendation, h.getMagangFilter)
+	api.POST("/maganginfo/data", h.getMagangRecomendation, h.getMagangData)
 	api.POST("/maganginfo/checkout", h.UserAddMagang)
+
+	api.GET("/coursesinfo", h.getCourseRecomendation, h.getACourseHome)
+	api.GET("/coursesinfo/recomendation", h.getAllCourseRecomendation)
+	api.GET("/coursesinfo/all", h.getAllCourse)
+	api.GET("/coursesinfo/data", h.getCourseData)
 
 }
 

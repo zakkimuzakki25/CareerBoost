@@ -68,3 +68,240 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 
 	h.SuccessResponse(ctx, http.StatusOK, "Course berhasil ditambahkan", nil, nil)
 }
+
+func (h *handler) getAllCourse(ctx *gin.Context) {
+	var courseParam entity.CourseParam
+	if err := h.BindParam(ctx, &courseParam); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
+		return
+	}
+
+	courseParam.FormatPagination()
+
+	var courseBody []entity.Course
+
+	if err := h.db.
+		Model(entity.Course{}).
+		Limit(int(courseParam.Limit)).
+		Offset(int(courseParam.Offset)).
+		Find(&courseBody).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	var totalElements int64
+
+	if err := h.db.
+		Model(entity.Course{}).
+		Limit(int(courseParam.Limit)).
+		Offset(int(courseParam.Offset)).
+		Count(&totalElements).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	courseParam.ProcessPagination(totalElements)
+
+	type resp struct {
+		Foto      string  `json:"foto"`
+		Judul     string  `json:"judul"`
+		Deskripsi string  `json:"deskripsi"`
+		Rate      float32 `json:"rate"`
+		Price     float32 `json:"price"`
+	}
+
+	var courses []resp
+	for _, course := range courseBody {
+
+		var resps resp
+		resps.Foto = course.Foto
+		resps.Judul = course.Judul
+		resps.Deskripsi = course.Deskripsi
+		resps.Rate = course.Rate
+		resps.Price = course.Price
+
+		courses = append(courses, resps)
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, &courseParam.PaginationParam)
+}
+
+func (h *handler) getCourseRecomendation(ctx *gin.Context) {
+	var courseBody []entity.Course
+
+	if err := h.db.Model(entity.Course{}).Order("rate desc").Limit(8).Find(&courseBody).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	type resp struct {
+		Foto      string  `json:"foto"`
+		Judul     string  `json:"judul"`
+		Deskripsi string  `json:"deskripsi"`
+		Rate      float32 `json:"rate"`
+		Price     float32 `json:"price"`
+	}
+
+	var courses []resp
+	for _, course := range courseBody {
+
+		var resps resp
+		resps.Foto = course.Foto
+		resps.Judul = course.Judul
+		resps.Deskripsi = course.Deskripsi
+		resps.Rate = course.Rate
+		resps.Price = course.Price
+
+		courses = append(courses, resps)
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, nil)
+}
+
+func (h *handler) getACourseHome(ctx *gin.Context) {
+	var courseBody []entity.Course
+
+	if err := h.db.
+		Model(entity.Course{}).Limit(8).Find(&courseBody).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	type resp struct {
+		Foto      string  `json:"foto"`
+		Judul     string  `json:"judul"`
+		Deskripsi string  `json:"deskripsi"`
+		Rate      float32 `json:"rate"`
+		Price     float32 `json:"price"`
+	}
+
+	var courses []resp
+	for _, course := range courseBody {
+
+		var resps resp
+		resps.Foto = course.Foto
+		resps.Judul = course.Judul
+		resps.Deskripsi = course.Deskripsi
+		resps.Rate = course.Rate
+		resps.Price = course.Price
+
+		courses = append(courses, resps)
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, nil)
+}
+
+func (h *handler) getAllCourseRecomendation(ctx *gin.Context) {
+	var courseParam entity.CourseParam
+	if err := h.BindParam(ctx, &courseParam); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
+		return
+	}
+
+	courseParam.FormatPagination()
+
+	var courseBody []entity.Course
+
+	if err := h.db.
+		Model(entity.Course{}).
+		Order("rate desc").
+		Limit(int(courseParam.Limit)).
+		Offset(int(courseParam.Offset)).
+		Find(&courseBody).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	var totalElements int64
+
+	if err := h.db.
+		Model(entity.Course{}).
+		Limit(int(courseParam.Limit)).
+		Offset(int(courseParam.Offset)).
+		Count(&totalElements).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	courseParam.ProcessPagination(totalElements)
+
+	type resp struct {
+		Foto      string  `json:"foto"`
+		Judul     string  `json:"judul"`
+		Deskripsi string  `json:"deskripsi"`
+		Rate      float32 `json:"rate"`
+		Price     float32 `json:"price"`
+	}
+
+	var courses []resp
+	for _, course := range courseBody {
+
+		var resps resp
+		resps.Foto = course.Foto
+		resps.Judul = course.Judul
+		resps.Deskripsi = course.Deskripsi
+		resps.Rate = course.Rate
+		resps.Price = course.Price
+
+		courses = append(courses, resps)
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, &courseParam.PaginationParam)
+}
+
+func (h *handler) getCourseData(ctx *gin.Context) {
+	var courseBody entity.CourseReqByID
+	if err := h.BindBody(ctx, &courseBody); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal bindbody", nil)
+		return
+	}
+
+	var courseDB entity.Course
+
+	err := h.db.Where("id = ?", courseBody.ID).Take(&courseDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	var resp entity.CourseRespData
+
+	resp.Judul = courseDB.Judul
+	resp.Deskripsi = courseDB.Deskripsi
+	resp.Intro = courseDB.Intro
+	resp.Price = courseDB.Price
+	resp.Rate = courseDB.Rate
+
+	var playlists []entity.Playlist
+	if err := h.db.Model(&courseDB).Association("Playlist").Find(&playlists); err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+	for _, playlist := range playlists {
+		playlists = append(playlists, entity.Playlist{
+			Nama:     playlist.Nama,
+			Durasi:   playlist.Durasi,
+			CourseID: playlist.CourseID,
+		})
+
+		var video []entity.Video
+		if err := h.db.Model(&playlist).Association("Skill").Find(&video); err != nil {
+			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+			return
+		}
+		var vidoes []entity.Video
+		for _, s := range video {
+			vidoes = append(vidoes, entity.Video{
+				Link:       s.Link,
+				Judul:      s.Judul,
+				Durasi:     s.Durasi,
+				PlaylistID: s.PlaylistID,
+			})
+		}
+		playlist.Video = vidoes
+
+	}
+	resp.Playlist = playlists
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
+}

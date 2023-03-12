@@ -80,7 +80,7 @@ func (h *handler) getAllMentor(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Success", mentors, &postParam.PaginationParam)
 }
 
-func (h *handler) getMentorRekomendation(ctx *gin.Context) {
+func (h *handler) getMentorRecomendation(ctx *gin.Context) {
 	var mentorDB []entity.Mentor
 
 	err := h.db.Order("rate desc").Limit(4).Find(&mentorDB).Error

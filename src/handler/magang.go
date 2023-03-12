@@ -96,7 +96,7 @@ func (h *handler) getAllMagang(ctx *gin.Context) {
 	}
 }
 
-func (h *handler) getMagangRekomendation(ctx *gin.Context) {
+func (h *handler) getMagangRecomendation(ctx *gin.Context) {
 	var magangParam entity.MagangParam
 	if err := h.BindParam(ctx, &magangParam); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
