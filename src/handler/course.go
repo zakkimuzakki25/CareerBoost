@@ -273,24 +273,18 @@ func (h *handler) getCourseData(ctx *gin.Context) {
 	resp.Rate = courseDB.Rate
 
 	var playlists []entity.Playlist
-	if err := h.db.Model(&courseDB).Association("Playlist").Find(&playlists); err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+	if err := h.db.Where("course_id = ?", courseBody.ID).Find(&playlists); err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini", nil)
 		return
 	}
 	for _, playlist := range playlists {
-		playlists = append(playlists, entity.Playlist{
-			Nama:     playlist.Nama,
-			Durasi:   playlist.Durasi,
-			CourseID: playlist.CourseID,
-		})
-
-		var video []entity.Video
-		if err := h.db.Model(&playlist).Association("Skill").Find(&video); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		var videos []entity.Video
+		if err := h.db.Where("playlist_id = ?", playlist.ID).Find(&videos); err != nil {
+			h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini 2", nil)
 			return
 		}
 		var vidoes []entity.Video
-		for _, s := range video {
+		for _, s := range videos {
 			vidoes = append(vidoes, entity.Video{
 				Link:       s.Link,
 				Judul:      s.Judul,
@@ -298,10 +292,13 @@ func (h *handler) getCourseData(ctx *gin.Context) {
 				PlaylistID: s.PlaylistID,
 			})
 		}
-		playlist.Video = vidoes
-
+		resp.Playlist = append(resp.Playlist, entity.Playlist{
+			Nama:     playlist.Nama,
+			Durasi:   playlist.Durasi,
+			CourseID: playlist.CourseID,
+			Video:    vidoes,
+		})
 	}
-	resp.Playlist = playlists
 
 	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
 }

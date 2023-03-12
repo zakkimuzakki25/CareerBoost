@@ -32,7 +32,7 @@ type UserRegister struct {
 	Username   string `json:"username" gorm:"NOT NULL" binding:"required"`
 	Email      string `json:"email" gorm:"NOT NULL" binding:"required"`
 	Password   string `json:"password" gorm:"NOT NULL" binding:"required"`
-	InterestID []uint `json:"interestID" gorm:"NOT NULL" binding:"required"`
+	InterestID []uint `json:"interestID" gorm:"NOT NULL"`
 }
 
 type UserLogin struct {
