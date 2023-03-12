@@ -12,6 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// test
 func main() {
 	cnfg := config.Init()
 	if err := cnfg.Load(".env"); err != nil {
