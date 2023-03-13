@@ -18,13 +18,11 @@ type User struct {
 	TanggalLahir time.Time  `json:"tanggal_lahir" gorm:"default:null"`
 	TempatLahir  string     `json:"tempat_lahir" gorm:"type:VARCHAR(50);default:null"`
 	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(50);default:null"`
-	Course       []Course   `json:"course" gorm:"many2many:users_course;default:null"`
 	ProfilePhoto string     `json:"profile_photo" gorom:"default:null"`
 	Deskripsi    string     `json:"deskripsi" gorm:"type:VARCHAR(250);default:null"`
-	Mentor       Mentor     `json:"mentor" gorm:"foreignKey:MentorID;default:null"`
-	MentorID     uint       `json:"mentor_id" gorm:"default:null"`
-	Magang       Magang     `json:"magang" gorm:"foreignKey:MentorID;default:null"`
-	MagangID     uint       `json:"magang_id" gorm:"default:null"`
+	Mentor       []Mentor   `json:"mentors" gorm:"many2many:user_mentors"`
+	Magang       []Magang   `json:"magangs" gorm:"many2many:user_magangs"`
+	Course       []Course   `json:"courses" gorm:"many2many:user_courses"`
 }
 
 type UserRegister struct {

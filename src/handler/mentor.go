@@ -151,6 +151,9 @@ func (h *handler) getMentorData(ctx *gin.Context) {
 	resp.Deskripsi = mentorDB.Deskripsi
 	resp.Rate = mentorDB.Rate
 	resp.Fee = mentorDB.Fee
+	resp.WA = mentorDB.WA
+	resp.IG = mentorDB.IG
+	resp.Email = mentorDB.Email
 
 	var skill []entity.Skill
 	if err := h.db.Model(&mentorDB).Association("Skill").Find(&skill); err != nil {
@@ -180,7 +183,8 @@ func (h *handler) getMentorData(ctx *gin.Context) {
 func (h *handler) getMentorExp(ctx *gin.Context) {
 	var mentorBody entity.MentorReqByID
 	if err := h.BindBody(ctx, &mentorBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
+		fmt.Println(err)
+		// h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
 		return
 	}
 
@@ -355,4 +359,30 @@ func (h *handler) getMentorFilter(ctx *gin.Context) {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "Mentor Tidak Ditemukan", nil)
 		return
 	}
+}
+
+func (h *handler) MentorGetPhotoProfile(ctx *gin.Context) {
+	type mentorPhoto struct {
+		Profile string `json:"photo_profile"`
+	}
+
+	var mentorBody entity.MentorReqByID
+	if err := h.BindBody(ctx, &mentorBody); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal bindbody", nil)
+		return
+	}
+
+	var mentorDB entity.Mentor
+
+	err := h.db.Where("id = ?", mentorBody.ID).Take(&mentorDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	mentorResp := mentorPhoto{
+		Profile: mentorDB.ProfilePhoto,
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Succes", mentorResp, nil)
 }

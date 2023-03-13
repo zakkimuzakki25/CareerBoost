@@ -12,11 +12,11 @@ type Mentor struct {
 	Deskripsi    string     `json:"deskripsi" gorm:"type:VARCHAR(255);NOT NULL"`
 	Rate         int32      `json:"rate"`
 	Fee          int32      `json:"fee"`
-	Mentee       []User     `json:"mentee" gorm:"foreignkey:MentorID"`
 	Exp          []Exp      `json:"exp"`
 	WA           string     `json:"wa"`
 	IG           string     `json:"ig"`
 	Email        string     `json:"email"`
+	User         []User     `json:"users" gorm:"many2many:user_mentors;ForeignKey:ID"`
 }
 
 type MentorReqByID struct {

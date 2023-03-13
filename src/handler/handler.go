@@ -57,13 +57,13 @@ func (h *handler) registerRoutes() {
 	api.PUT("/profile", h.userUpdateProfile)
 	api.PUT("/profile/photo/update", h.userUploadPhotoProfile)
 	api.GET("/profile", h.userGetProfile)
-	api.GET("/profile/history", h.userGetMagang, h.userGetMentor)
-	api.GET("/profile/langganan", h.userGetMagang, h.userGetMentor)
+	api.GET("/profile/history", h.userGetMagangs, h.userGetMentors)
+	api.GET("/profile/langganan", h.userGetMentors)
 
 	api.GET("/mentorinfo", h.getMentorRecomendation, h.getAllMentor)
 	api.POST("/mentorinfo", h.getMentorRecomendation, h.getMentorFilter)
 	api.POST("/mentorinfo/data", h.getMentorData)
-	api.POST("/mentorinfo/pengalaman", h.getMentorExp)
+	api.POST("/mentorinfo/pengalaman", h.MentorGetPhotoProfile, h.getMentorExp)
 	api.POST("/mentorinfo/checkout", h.UserAddMentor)
 
 	api.GET("/maganginfo", h.getMagangRecomendation, h.getAllMagang)
@@ -75,6 +75,7 @@ func (h *handler) registerRoutes() {
 	api.POST("/courseinfo/recomendation", h.getAllCourseRecomendation)
 	api.POST("/courseinfo/all", h.getAllCourse)
 	api.POST("/courseinfo/data", h.getCourseData)
+	api.POST("/courseinfo/checkout", h.UserAddCourse)
 
 }
 

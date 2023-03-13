@@ -5,6 +5,7 @@ import (
 	"CareerBoost/src/entity"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,13 +21,15 @@ func ErrorResponse(c *gin.Context, code int64, message string, data interface{})
 
 func JwtMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenJwt, err := c.Cookie("token")
-		if err != nil {
+
+		authorization := c.Request.Header.Get("Authorization")
+		if !strings.HasPrefix(authorization, "Bearer ") {
 			ErrorResponse(c, http.StatusUnauthorized, "Unauthorized", nil)
 			c.Abort()
 			return
 		}
 
+		tokenJwt := authorization[7:]
 		claims := entity.UserClaims{}
 		jwtKey := os.Getenv("SECRET_KEY")
 

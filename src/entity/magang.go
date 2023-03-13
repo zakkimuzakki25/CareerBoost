@@ -13,7 +13,6 @@ type Magang struct {
 	Skill        []Skill    `json:"skillID" gorm:"many2many:magangs_skill"`
 	Interest     []Interest `json:"interestID" gorm:"many2many:magangs_interest"`
 	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(255);NOT NULL"`
-	Applican     []User     `json:"Applican" gorm:"foreignkey:MentorID"`
 	StatusMagang string     `json:"status_magang" gorm:"type:VARCHAR(255);NOT NULL"`
 	JangkaWaktu  string     `json:"jangka_waktu" gorm:"type:VARCHAR(255);NOT NULL"`
 	Deskripsi    string     `json:"deskripsi" gorm:"type:text"`

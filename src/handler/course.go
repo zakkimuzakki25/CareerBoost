@@ -24,10 +24,20 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 	courseDB.Rate = courseBody.Rate
 	courseDB.Price = courseBody.Price
 
-	var playlists []entity.Playlist
+	if err := h.db.Create(&courseDB).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "failed to create course", nil)
+		return
+	}
+
 	for _, playlist := range courseBody.Playlist {
+		var playl entity.Playlist
+
+		playl.Nama = playlist.Nama
+		playl.CourseID = courseDB.ID
+
 		var videos []entity.Video
 		count := 0
+
 		for _, video := range playlist.Video {
 
 			durasi, err := time.ParseDuration(video.Durasi)
@@ -37,33 +47,22 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 			}
 
 			count += int(durasi)
+
 			videos = append(videos, entity.Video{
 				Link:       video.Link,
 				Judul:      video.Judul,
 				Durasi:     video.Durasi,
-				PlaylistID: playlist.ID,
+				PlaylistID: playl.ID,
 			})
 		}
-		var playl entity.Playlist
 
-		playl.Nama = playlist.Nama
-		playl.Video = videos
-		playl.Course = courseDB
 		playl.Durasi = time.Duration(count)
-
-		playlists = append(playlists, playl)
+		playl.Video = videos
 
 		if err := h.db.Create(&playl).Error; err != nil {
 			h.ErrorResponse(ctx, http.StatusInternalServerError, "failed to add playlist", nil)
 			return
 		}
-	}
-
-	courseDB.Playlist = playlists
-
-	if err := h.db.Create(&courseDB).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "failed to create course", nil)
-		return
 	}
 
 	h.SuccessResponse(ctx, http.StatusOK, "Course berhasil ditambahkan", nil, nil)
@@ -252,7 +251,7 @@ func (h *handler) getAllCourseRecomendation(ctx *gin.Context) {
 func (h *handler) getCourseData(ctx *gin.Context) {
 	var courseBody entity.CourseReqByID
 	if err := h.BindBody(ctx, &courseBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal bindbody", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "failed to bind body", nil)
 		return
 	}
 
@@ -273,30 +272,35 @@ func (h *handler) getCourseData(ctx *gin.Context) {
 	resp.Rate = courseDB.Rate
 
 	var playlists []entity.Playlist
-	if err := h.db.Where("course_id = ?", courseBody.ID).Find(&playlists); err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini", nil)
+	if err := h.db.Where("course_id = ?", courseDB.ID).Find(&playlists).Error; err != nil {
+		fmt.Println(err)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "error occurred", nil)
 		return
 	}
+
 	for _, playlist := range playlists {
 		var videos []entity.Video
-		if err := h.db.Where("playlist_id = ?", playlist.ID).Find(&videos); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini 2", nil)
+		if err := h.db.Where("playlist_id = ?", playlist.ID).Find(&videos).Error; err != nil {
+			fmt.Println(err)
+			h.ErrorResponse(ctx, http.StatusInternalServerError, "error occurred", nil)
 			return
 		}
-		var vidoes []entity.Video
-		for _, s := range videos {
-			vidoes = append(vidoes, entity.Video{
-				Link:       s.Link,
-				Judul:      s.Judul,
-				Durasi:     s.Durasi,
-				PlaylistID: s.PlaylistID,
+
+		var respVideos []entity.RespVideo
+		for _, v := range videos {
+			respVideos = append(respVideos, entity.RespVideo{
+				Link:       v.Link,
+				Judul:      v.Judul,
+				Durasi:     v.Durasi,
+				PlaylistID: v.PlaylistID,
 			})
 		}
-		resp.Playlist = append(resp.Playlist, entity.Playlist{
+
+		resp.Playlist = append(resp.Playlist, entity.RespPlaylist{
 			Nama:     playlist.Nama,
 			Durasi:   playlist.Durasi,
 			CourseID: playlist.CourseID,
-			Video:    vidoes,
+			Video:    respVideos,
 		})
 	}
 
