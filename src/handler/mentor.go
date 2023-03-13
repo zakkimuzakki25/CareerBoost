@@ -8,82 +8,82 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// func (h *handler) getAllMentor(ctx *gin.Context) {
+// 	var postParam entity.MentorParam
+// 	if err := h.BindParam(ctx, &postParam); err != nil {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
+// 		return
+// 	}
+
+// 	postParam.FormatPagination()
+
+// 	var mentorDB []entity.Mentor
+
+// 	if err := h.db.
+// 		Model(entity.Mentor{}).
+// 		Limit(int(postParam.Limit)).
+// 		Offset(int(postParam.Offset)).
+// 		Find(&mentorDB).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
+
+// 	var totalElements int64
+
+// 	if err := h.db.
+// 		Model(entity.Mentor{}).
+// 		Limit(int(postParam.Limit)).
+// 		Offset(int(postParam.Offset)).
+// 		Count(&totalElements).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
+
+// 	postParam.ProcessPagination(totalElements)
+
+// 	var mentors []entity.MentorRespData
+// 	for _, mentor := range mentorDB {
+
+// 		var resp entity.MentorRespData
+// 		resp.ProfilePhoto = mentor.ProfilePhoto
+// 		resp.FullName = mentor.FullName
+// 		resp.Lokasi = mentor.Lokasi
+// 		resp.Deskripsi = mentor.Deskripsi
+// 		resp.Rate = mentor.Rate
+// 		resp.Fee = mentor.Fee
+
+// 		var skill []entity.Skill
+// 		if err := h.db.Model(&mentor).Association("Skill").Find(&skill); err != nil {
+// 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 			return
+// 		}
+// 		var skills []entity.RespSkill
+// 		for _, s := range skill {
+// 			skills = append(skills, entity.RespSkill{Nama: s.Nama})
+// 		}
+// 		resp.Skill = skills
+
+// 		var interest []entity.Interest
+// 		if err := h.db.Model(&mentor).Association("Interest").Find(&interest); err != nil {
+// 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 			return
+// 		}
+// 		var interests []entity.RespInterest
+// 		for _, s := range interest {
+// 			interests = append(interests, entity.RespInterest{Nama: s.Nama})
+// 		}
+// 		resp.Interest = interests
+
+// 		mentors = append(mentors, resp)
+// 	}
+
+// 	h.SuccessResponse(ctx, http.StatusOK, "Success", mentors, &postParam.PaginationParam)
+// }
+
 func (h *handler) getAllMentor(ctx *gin.Context) {
-	var postParam entity.MentorParam
-	if err := h.BindParam(ctx, &postParam); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
-		return
-	}
-
-	postParam.FormatPagination()
-
 	var mentorDB []entity.Mentor
 
-	if err := h.db.
-		Model(entity.Mentor{}).
-		Limit(int(postParam.Limit)).
-		Offset(int(postParam.Offset)).
-		Find(&mentorDB).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
-
-	var totalElements int64
-
-	if err := h.db.
-		Model(entity.Mentor{}).
-		Limit(int(postParam.Limit)).
-		Offset(int(postParam.Offset)).
-		Count(&totalElements).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
-
-	postParam.ProcessPagination(totalElements)
-
-	var mentors []entity.MentorRespData
-	for _, mentor := range mentorDB {
-
-		var resp entity.MentorRespData
-		resp.ProfilePhoto = mentor.ProfilePhoto
-		resp.FullName = mentor.FullName
-		resp.Lokasi = mentor.Lokasi
-		resp.Deskripsi = mentor.Deskripsi
-		resp.Rate = mentor.Rate
-		resp.Fee = mentor.Fee
-
-		var skill []entity.Skill
-		if err := h.db.Model(&mentor).Association("Skill").Find(&skill); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-			return
-		}
-		var skills []entity.RespSkill
-		for _, s := range skill {
-			skills = append(skills, entity.RespSkill{Nama: s.Nama})
-		}
-		resp.Skill = skills
-
-		var interest []entity.Interest
-		if err := h.db.Model(&mentor).Association("Interest").Find(&interest); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-			return
-		}
-		var interests []entity.RespInterest
-		for _, s := range interest {
-			interests = append(interests, entity.RespInterest{Nama: s.Nama})
-		}
-		resp.Interest = interests
-
-		mentors = append(mentors, resp)
-	}
-
-	h.SuccessResponse(ctx, http.StatusOK, "Success", mentors, &postParam.PaginationParam)
-}
-
-func (h *handler) getMentorRecomendation(ctx *gin.Context) {
-	var mentorDB []entity.Mentor
-
-	err := h.db.Order("rate desc").Limit(4).Find(&mentorDB).Error
+	err := h.db.Order("rate desc").Find(&mentorDB).Error
 	if err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
@@ -93,12 +93,16 @@ func (h *handler) getMentorRecomendation(ctx *gin.Context) {
 	for _, mentor := range mentorDB {
 
 		var resp entity.MentorRespData
+		resp.ID = mentor.ID
 		resp.ProfilePhoto = mentor.ProfilePhoto
 		resp.FullName = mentor.FullName
 		resp.Lokasi = mentor.Lokasi
 		resp.Deskripsi = mentor.Deskripsi
 		resp.Rate = mentor.Rate
 		resp.Fee = mentor.Fee
+		resp.WA = mentor.WA
+		resp.IG = mentor.IG
+		resp.Email = mentor.Email
 
 		var skill []entity.Skill
 		if err := h.db.Model(&mentor).Association("Skill").Find(&skill); err != nil {

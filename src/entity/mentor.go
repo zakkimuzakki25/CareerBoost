@@ -24,6 +24,7 @@ type MentorReqByID struct {
 }
 
 type MentorRespData struct {
+	ID           uint           `json:"id"`
 	ProfilePhoto string         `json:"profile_photo"`
 	FullName     string         `json:"full_name"`
 	Skill        []RespSkill    `json:"skill"`

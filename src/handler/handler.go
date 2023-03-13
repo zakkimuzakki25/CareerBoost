@@ -37,7 +37,7 @@ func (h *handler) registerRoutes() {
 	api := h.http.Group("api")
 
 	api.Use(middleware.JwtMiddleware())
-	api.Use(h.userGetHome)
+	// api.Use(h.userGetHome)
 
 	admin := h.http.Group("admin")
 	admin.Use(middleware.JwtMiddlewareAdmin())
@@ -51,7 +51,7 @@ func (h *handler) registerRoutes() {
 	admin.POST("/course/post", h.addNewCourse)
 	admin.GET("/", h.ping)
 
-	h.http.GET("/", h.ping)
+	h.http.GET("/", h.userGetHome)
 	h.http.POST("/user/register", h.userRegister)
 	h.http.POST("/user/login", h.userLogin)
 	api.PUT("/profile", h.userUpdateProfile)
@@ -60,8 +60,8 @@ func (h *handler) registerRoutes() {
 	api.GET("/profile/history", h.userGetMagangs, h.userGetMentors)
 	api.GET("/profile/langganan", h.userGetMentors)
 
-	api.GET("/mentorinfo", h.getMentorRecomendation, h.getAllMentor)
-	api.POST("/mentorinfo", h.getMentorRecomendation, h.getMentorFilter)
+	api.GET("/mentorinfo", h.getAllMentor)
+	api.POST("/mentorinfo", h.getMentorFilter)
 	api.POST("/mentorinfo/data", h.getMentorData)
 	api.POST("/mentorinfo/pengalaman", h.MentorGetPhotoProfile, h.getMentorExp)
 	api.POST("/mentorinfo/checkout", h.UserAddMentor)
