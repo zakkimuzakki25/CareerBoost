@@ -17,14 +17,16 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 	}
 
 	var courseDB entity.Course
+	courseDB.Foto = courseBody.Foto
 	courseDB.Judul = courseBody.Judul
 	courseDB.Deskripsi = courseBody.Deskripsi
 	courseDB.Intro = courseBody.Intro
 	courseDB.Rate = courseBody.Rate
 	courseDB.Price = courseBody.Price
+	courseDB.InterestID = courseBody.InterestID
 
 	if err := h.db.Create(&courseDB).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "failed to create course", nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
@@ -59,6 +61,21 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 }
 
 func (h *handler) getAllCourse(ctx *gin.Context) {
+
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
 	var courseParam entity.CourseParam
 	if err := h.BindParam(ctx, &courseParam); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
@@ -67,10 +84,28 @@ func (h *handler) getAllCourse(ctx *gin.Context) {
 
 	courseParam.FormatPagination()
 
+	var courseSearch entity.CourseSearch
+	if err := h.BindBody(ctx, &courseSearch); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body magang", nil)
+		return
+	}
+
 	var courseBody []entity.Course
 
-	if err := h.db.
-		Model(entity.Course{}).
+	db := h.db.Model(entity.Course{}).
+		Limit(int(courseParam.Limit)).
+		Offset(int(courseParam.Offset))
+
+	// Modify this line to apply the search query
+	if courseSearch.Key != "" {
+		db = db.Where("judul LIKE ?", "%"+courseSearch.Key+"%")
+	}
+
+	if err := db.
+		Joins("JOIN interests ON courses.interest_id = interests.id").
+		Joins("JOIN users_interest ON interests.id = users_interest.interest_id").
+		Where("users_interest.user_id = ? AND courses.interest_id = users_interest.interest_id", userID).
+		Where("users_interest.user_id = ?", userID).
 		Limit(int(courseParam.Limit)).
 		Offset(int(courseParam.Offset)).
 		Find(&courseBody).Error; err != nil {
@@ -81,9 +116,10 @@ func (h *handler) getAllCourse(ctx *gin.Context) {
 	var totalElements int64
 
 	if err := h.db.
-		Model(entity.Course{}).
-		Limit(int(courseParam.Limit)).
-		Offset(int(courseParam.Offset)).
+		Table("courses").
+		Joins("JOIN interests ON courses.interest_id = interests.id").
+		Joins("JOIN users_interest ON interests.id = users_interest.interest_id").
+		Where("users_interest.user_id = ? AND courses.interest_id = users_interest.interest_id", userID).
 		Count(&totalElements).Error; err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
@@ -115,128 +151,163 @@ func (h *handler) getAllCourse(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, &courseParam.PaginationParam)
 }
 
-func (h *handler) getCourseRecomendation(ctx *gin.Context) {
-	var courseBody []entity.Course
+// func (h *handler) getCourseRecomendation(ctx *gin.Context) {
+// 	var courseBody []entity.Course
 
-	if err := h.db.Model(entity.Course{}).Order("rate desc").Limit(8).Find(&courseBody).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
+// 	if err := h.db.Model(entity.Course{}).Order("rate desc").Limit(8).Find(&courseBody).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
 
-	type resp struct {
-		Foto      string  `json:"foto"`
-		Judul     string  `json:"judul"`
-		Deskripsi string  `json:"deskripsi"`
-		Rate      float32 `json:"rate"`
-		Price     float32 `json:"price"`
-	}
+// 	type resp struct {
+// 		Foto      string  `json:"foto"`
+// 		Judul     string  `json:"judul"`
+// 		Deskripsi string  `json:"deskripsi"`
+// 		Rate      float32 `json:"rate"`
+// 		Price     float32 `json:"price"`
+// 	}
 
-	var courses []resp
-	for _, course := range courseBody {
+// 	var courses []resp
+// 	for _, course := range courseBody {
 
-		var resps resp
-		resps.Foto = course.Foto
-		resps.Judul = course.Judul
-		resps.Deskripsi = course.Deskripsi
-		resps.Rate = course.Rate
-		resps.Price = course.Price
+// 		var resps resp
+// 		resps.Foto = course.Foto
+// 		resps.Judul = course.Judul
+// 		resps.Deskripsi = course.Deskripsi
+// 		resps.Rate = course.Rate
+// 		resps.Price = course.Price
 
-		courses = append(courses, resps)
-	}
+// 		courses = append(courses, resps)
+// 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, nil)
-}
+// 	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, nil)
+// }
 
-func (h *handler) getACourseHome(ctx *gin.Context) {
-	var courseBody []entity.Course
+// func (h *handler) getACourseHome(ctx *gin.Context) {
+// 	var courseBody []entity.Course
 
-	if err := h.db.
-		Model(entity.Course{}).Limit(8).Find(&courseBody).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
+// 	if err := h.db.
+// 		Model(entity.Course{}).Find(&courseBody).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
 
-	type resp struct {
-		Foto      string  `json:"foto"`
-		Judul     string  `json:"judul"`
-		Deskripsi string  `json:"deskripsi"`
-		Rate      float32 `json:"rate"`
-		Price     float32 `json:"price"`
-	}
+// 	type resp struct {
+// 		Foto      string  `json:"foto"`
+// 		Judul     string  `json:"judul"`
+// 		Deskripsi string  `json:"deskripsi"`
+// 		Rate      float32 `json:"rate"`
+// 		Price     float32 `json:"price"`
+// 	}
 
-	var courses []resp
-	for _, course := range courseBody {
+// 	var courses []resp
+// 	for _, course := range courseBody {
 
-		var resps resp
-		resps.Foto = course.Foto
-		resps.Judul = course.Judul
-		resps.Deskripsi = course.Deskripsi
-		resps.Rate = course.Rate
-		resps.Price = course.Price
+// 		var resps resp
+// 		resps.Foto = course.Foto
+// 		resps.Judul = course.Judul
+// 		resps.Deskripsi = course.Deskripsi
+// 		resps.Rate = course.Rate
+// 		resps.Price = course.Price
 
-		courses = append(courses, resps)
-	}
+// 		courses = append(courses, resps)
+// 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, nil)
-}
+// 	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, nil)
+// }
 
-func (h *handler) getAllCourseRecomendation(ctx *gin.Context) {
-	var courseParam entity.CourseParam
-	if err := h.BindParam(ctx, &courseParam); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
-		return
-	}
+// func (h *handler) getAllCourseRecomendation(ctx *gin.Context) {
 
-	courseParam.FormatPagination()
+// 	user, exist := ctx.Get("user")
+// 	if !exist {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+// 		return
+// 	}
 
-	var courseBody []entity.Course
+// 	claims, ok := user.(entity.UserClaims)
+// 	if !ok {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+// 		return
+// 	}
 
-	if err := h.db.
-		Model(entity.Course{}).
-		Order("rate desc").
-		Limit(int(courseParam.Limit)).
-		Offset(int(courseParam.Offset)).
-		Find(&courseBody).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
+// 	userID := claims.ID
 
-	var totalElements int64
+// 	var courseParam entity.CourseParam
+// 	if err := h.BindParam(ctx, &courseParam); err != nil {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
+// 		return
+// 	}
 
-	if err := h.db.
-		Model(entity.Course{}).
-		Limit(int(courseParam.Limit)).
-		Offset(int(courseParam.Offset)).
-		Count(&totalElements).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
+// 	courseParam.FormatPagination()
 
-	courseParam.ProcessPagination(totalElements)
+// 	var courseSearch entity.CourseSearch
+// 	if err := h.BindBody(ctx, &courseSearch); err != nil {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body magang", nil)
+// 		return
+// 	}
 
-	type resp struct {
-		Foto      string  `json:"foto"`
-		Judul     string  `json:"judul"`
-		Deskripsi string  `json:"deskripsi"`
-		Rate      float32 `json:"rate"`
-		Price     float32 `json:"price"`
-	}
+// 	var courseBody []entity.Course
 
-	var courses []resp
-	for _, course := range courseBody {
+// 	db := h.db.Model(entity.Course{}).
+// 		Limit(int(courseParam.Limit)).
+// 		Offset(int(courseParam.Offset))
 
-		var resps resp
-		resps.Foto = course.Foto
-		resps.Judul = course.Judul
-		resps.Deskripsi = course.Deskripsi
-		resps.Rate = course.Rate
-		resps.Price = course.Price
+// 	// Modify this line to apply the search query
+// 	if courseSearch.Key != "" {
+// 		db = db.Where("judul LIKE ?", "%"+courseSearch.Key+"%")
+// 	}
 
-		courses = append(courses, resps)
-	}
+// 	if err := db.
+// 		Order("rate desc").
+// 		Joins("JOIN interests ON courses.interest_id = interests.id").
+// 		Joins("JOIN users_interest ON interests.id = users_interest.interest_id").
+// 		Where("users_interest.user_id = ? AND courses.interest_id = users_interest.interest_id", userID).
+// 		Where("users_interest.user_id = ?", userID).
+// 		Limit(int(courseParam.Limit)).
+// 		Offset(int(courseParam.Offset)).
+// 		Find(&courseBody).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, &courseParam.PaginationParam)
-}
+// 	var totalElements int64
+
+// 	if err := h.db.
+// 		Table("courses").
+// 		Order("rate desc").
+// 		Joins("JOIN interests ON courses.interest_id = interests.id").
+// 		Joins("JOIN users_interest ON interests.id = users_interest.interest_id").
+// 		Where("users_interest.user_id = ? AND courses.interest_id = users_interest.interest_id", userID).
+// 		Count(&totalElements).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
+
+// 	courseParam.ProcessPagination(totalElements)
+
+// 	type resp struct {
+// 		Foto      string  `json:"foto"`
+// 		Judul     string  `json:"judul"`
+// 		Deskripsi string  `json:"deskripsi"`
+// 		Rate      float32 `json:"rate"`
+// 		Price     float32 `json:"price"`
+// 	}
+
+// 	var courses []resp
+// 	for _, course := range courseBody {
+
+// 		var resps resp
+// 		resps.Foto = course.Foto
+// 		resps.Judul = course.Judul
+// 		resps.Deskripsi = course.Deskripsi
+// 		resps.Rate = course.Rate
+// 		resps.Price = course.Price
+
+// 		courses = append(courses, resps)
+// 	}
+
+// 	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, &courseParam.PaginationParam)
+// }
 
 func (h *handler) getCourseData(ctx *gin.Context) {
 	var courseBody entity.CourseReqByID

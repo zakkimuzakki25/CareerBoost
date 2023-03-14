@@ -95,7 +95,7 @@ func (h *handler) userLogin(ctx *gin.Context) {
 }
 
 func (h *handler) userUpdateProfile(ctx *gin.Context) {
-	var userBody entity.UserProfilePage
+	var userBody entity.UserUpdateProfile
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "Kolom harus diisi", nil)
@@ -125,6 +125,17 @@ func (h *handler) userUpdateProfile(ctx *gin.Context) {
 		TempatLahir:  userBody.TempatLahir,
 		Deskripsi:    userBody.Deskripsi,
 	}).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini", nil)
+		return
+	}
+
+	var interests []entity.Interest
+	if err := h.db.Where("id IN ?", userBody.InterestID).Find(&interests).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini", nil)
+		return
+	}
+
+	if err := h.db.Model(&userDB).Association("Interest").Replace(interests); err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, "error sini", nil)
 		return
 	}

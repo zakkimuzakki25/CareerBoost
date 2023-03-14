@@ -72,10 +72,10 @@ func (h *handler) registerRoutes() {
 	api.GET("/maganginfo/data", h.getMagangData)
 	api.POST("/maganginfo/checkout", h.UserAddMagang)
 
-	api.GET("/courseinfo", h.getCourseRecomendation, h.getACourseHome)
-	api.POST("/courseinfo/recomendation", h.getAllCourseRecomendation)
-	api.POST("/courseinfo/all", h.getAllCourse)
-	api.POST("/courseinfo/data", h.getCourseData)
+	api.GET("/courseinfo", h.getAllCourse)
+	// api.GET("/courseinfo/recomendation", h.getAllCourseRecomendation)
+	api.GET("/courseinfo/all", h.getAllCourse)
+	api.GET("/courseinfo/data", h.getCourseData)
 	api.POST("/courseinfo/checkout", h.UserAddCourse)
 
 }

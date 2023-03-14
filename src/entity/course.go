@@ -6,22 +6,25 @@ import (
 
 type Course struct {
 	gorm.Model
-	Judul     string     `json:"judul" gorm:"type:VARCHAR(255)"`
-	Foto      string     `json:"foto" gorm:"type:VARCHAR(255)"`
-	Deskripsi string     `json:"deskripsi" gorm:"type:text"`
-	Intro     string     `json:"intro" gorm:"type:text"`
-	Playlist  []Playlist `json:"playlist"`
-	Rate      float32    `json:"rate"`
-	Price     float32    `json:"price"`
+	Judul      string     `json:"judul" gorm:"type:VARCHAR(255)"`
+	Foto       string     `json:"foto" gorm:"type:VARCHAR(255)"`
+	Deskripsi  string     `json:"deskripsi" gorm:"type:text"`
+	Intro      string     `json:"intro" gorm:"type:text"`
+	InterestID uint       `json:"interest_id"`
+	Playlist   []Playlist `json:"playlist"`
+	Rate       float32    `json:"rate"`
+	Price      float32    `json:"price"`
 }
 
 type CourseAdd struct {
-	Judul     string     `json:"judul"`
-	Deskripsi string     `json:"deskripsi"`
-	Intro     string     `json:"intro"`
-	Playlist  []Playlist `json:"playlist"`
-	Rate      float32    `json:"rate"`
-	Price     float32    `json:"price"`
+	Foto       string     `json:"foto"`
+	Judul      string     `json:"judul"`
+	Deskripsi  string     `json:"deskripsi"`
+	Intro      string     `json:"intro"`
+	Playlist   []Playlist `json:"playlist"`
+	Rate       float32    `json:"rate"`
+	Price      float32    `json:"price"`
+	InterestID uint       `json:"interest_id"`
 }
 
 type CourseRespData struct {
@@ -40,6 +43,10 @@ type CourseParam struct {
 
 type CourseReqByID struct {
 	ID uint `json:"id"`
+}
+
+type CourseSearch struct {
+	Key string `json:"key"`
 }
 
 type Playlist struct {

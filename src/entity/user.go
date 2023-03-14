@@ -49,6 +49,17 @@ type UserProfilePage struct {
 	InterestID   []RespInterest `json:"interest"`
 }
 
+type UserUpdateProfile struct {
+	Email        string    `json:"email"`
+	FullName     string    `json:"full_name"`
+	Lokasi       string    `json:"lokasi"`
+	ProfilePhoto string    `json:"profile_photo"`
+	Deskripsi    string    `json:"deskripsi"`
+	TanggalLahir time.Time `json:"tanggal_lahir"`
+	TempatLahir  string    `json:"tempat_lahir"`
+	InterestID   []uint    `json:"interest"`
+}
+
 type UserHome struct {
 	FullName     string `json:"full_name"`
 	ProfilePhoto string `json:"profile_photo"`
