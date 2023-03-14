@@ -1,8 +1,8 @@
 package entity
 
 const (
-	FrontEndInterest              = "Front End"
-	BackEndInterest               = "Back End"
+	FrontEndInterest              = "Front End Developer"
+	BackEndInterest               = "Back End Developer"
 	DataScienceInterest           = "Data Science"
 	ArtificialInteligenceInterest = "Artificial Inteligence"
 	CyberSecurityInterest         = "Cyber Security"

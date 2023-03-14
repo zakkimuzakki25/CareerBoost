@@ -96,9 +96,6 @@ func (h *handler) getMentorData(ctx *gin.Context) {
 	resp.Deskripsi = mentorDB.Deskripsi
 	resp.Rate = mentorDB.Rate
 	resp.Fee = mentorDB.Fee
-	resp.WA = mentorDB.WA
-	resp.IG = mentorDB.IG
-	resp.Email = mentorDB.Email
 
 	var skill []entity.Skill
 	if err := h.db.Model(&mentorDB).Association("Skill").Find(&skill); err != nil {

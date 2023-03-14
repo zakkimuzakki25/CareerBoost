@@ -60,15 +60,16 @@ func (h *handler) registerRoutes() {
 	api.GET("/profile/history", h.userGetMagangs, h.userGetMentors)
 	api.GET("/profile/langganan", h.userGetMentors)
 
-	api.GET("/mentorinfo", h.getAllMentor)
+	api.GET("/mentorinfo/all", h.getAllMentor)
+	api.GET("/mentorinfo/rekomendasi", h.getMagangRecomendation)
 	api.POST("/mentorinfo", h.getMentorFilter)
-	api.POST("/mentorinfo/data", h.getMentorData)
+	api.GET("/mentorinfo/data", h.getMentorData)
 	api.POST("/mentorinfo/pengalaman", h.getMentorExp)
 	api.POST("/mentorinfo/checkout", h.UserAddMentor)
 
-	api.GET("/maganginfo", h.getAllMagang)
-	api.POST("/maganginfo", h.getMagangFilter)
-	api.POST("/maganginfo/data", h.getMagangData)
+	// api.GET("/maganginfo", h.getAllMagang)
+	api.GET("/maganginfo", h.getMagangFilter)
+	api.GET("/maganginfo/data", h.getMagangData)
 	api.POST("/maganginfo/checkout", h.UserAddMagang)
 
 	api.GET("/courseinfo", h.getCourseRecomendation, h.getACourseHome)

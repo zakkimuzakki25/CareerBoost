@@ -34,6 +34,18 @@ type MentorRespData struct {
 	Deskripsi    string         `json:"deskripsi"`
 	Rate         float32        `json:"rate"`
 	Fee          float32        `json:"fee"`
+}
+
+type MentorRespDataLangganan struct {
+	ID           uint           `json:"id"`
+	ProfilePhoto string         `json:"profile_photo"`
+	FullName     string         `json:"full_name"`
+	Skill        []RespSkill    `json:"skill"`
+	Interest     []RespInterest `json:"interest"`
+	Lokasi       string         `json:"lokasi"`
+	Deskripsi    string         `json:"deskripsi"`
+	Rate         float32        `json:"rate"`
+	Fee          float32        `json:"fee"`
 	WA           string         `json:"wa"`
 	IG           string         `json:"ig"`
 	Email        string         `json:"email"`
