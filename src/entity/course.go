@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -46,11 +44,11 @@ type CourseReqByID struct {
 
 type Playlist struct {
 	gorm.Model
-	Nama     string        `gorm:"type:VARCHAR(55)"`
-	Video    []Video       `json:"video"`
-	Durasi   time.Duration `json:"durasi"`
-	Course   Course        `json:"course"`
-	CourseID uint          `json:"course_id"`
+	Nama     string  `gorm:"type:VARCHAR(55)"`
+	Video    []Video `json:"video"`
+	Durasi   string  `json:"durasi"`
+	Course   Course  `json:"course"`
+	CourseID uint    `json:"course_id"`
 }
 
 type Video struct {
@@ -63,7 +61,7 @@ type Video struct {
 
 type RespPlaylist struct {
 	Nama     string
-	Durasi   time.Duration
+	Durasi   string
 	Video    []RespVideo
 	CourseID uint
 }

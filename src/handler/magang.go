@@ -41,17 +41,17 @@ func (h *handler) getAllMagang(ctx *gin.Context) {
 
 	magangParam.ProcessPagination(totalElements)
 
-	var magangs []entity.MagangRespData
+	var magangs []entity.MagangRespHome
 	for _, magang := range magangDB {
 
 		var count int64
-		err := h.db.Model(&entity.User{}).Where("magang_id = ?", magang.ID).Count(&count).Error
+		err := h.db.Model(&entity.User{}).Where("magangs.id = ?", magang.ID).Joins("JOIN user_magangs ON users.id = user_magangs.user_id JOIN magangs ON user_magangs.magang_id = magangs.id").Count(&count).Error
 		if err != nil {
 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 			return
 		}
 
-		var resp entity.MagangRespData
+		var resp entity.MagangRespHome
 		resp.CreatedAt = magang.CreatedAt
 		resp.Logo = magang.Logo
 		resp.Perusahaan = magang.Perusahaan
@@ -96,94 +96,94 @@ func (h *handler) getAllMagang(ctx *gin.Context) {
 	}
 }
 
-func (h *handler) getMagangRecomendation(ctx *gin.Context) {
-	var magangParam entity.MagangParam
-	if err := h.BindParam(ctx, &magangParam); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
-		return
-	}
+// func (h *handler) getMagangRecomendation(ctx *gin.Context) {
+// 	var magangParam entity.MagangParam
+// 	if err := h.BindParam(ctx, &magangParam); err != nil {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
+// 		return
+// 	}
 
-	magangParam.FormatPagination()
+// 	magangParam.FormatPagination()
 
-	var magangDB []entity.Magang
+// 	var magangDB []entity.Magang
 
-	if err := h.db.
-		Model(entity.Magang{}).
-		Order("rate desc").
-		Limit(int(magangParam.Limit)).
-		Offset(int(magangParam.Offset)).
-		Find(&magangDB).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
+// 	if err := h.db.
+// 		Model(entity.Magang{}).
+// 		Order("rate desc").
+// 		Limit(int(magangParam.Limit)).
+// 		Offset(int(magangParam.Offset)).
+// 		Find(&magangDB).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
 
-	var totalElements int64
+// 	var totalElements int64
 
-	if err := h.db.
-		Model(entity.Magang{}).
-		Limit(int(magangParam.Limit)).
-		Offset(int(magangParam.Offset)).
-		Count(&totalElements).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
+// 	if err := h.db.
+// 		Model(entity.Magang{}).
+// 		Limit(int(magangParam.Limit)).
+// 		Offset(int(magangParam.Offset)).
+// 		Count(&totalElements).Error; err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
 
-	magangParam.ProcessPagination(totalElements)
+// 	magangParam.ProcessPagination(totalElements)
 
-	var magangs []entity.MagangRespData
-	for _, magang := range magangDB {
+// 	var magangs []entity.MagangRespHome
+// 	for _, magang := range magangDB {
 
-		var count int64
-		err := h.db.Model(&entity.User{}).Where("magang_id = ?", magang.ID).Count(&count).Error
-		if err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-			return
-		}
+// 		var count int64
+// 		err := h.db.Model(&entity.User{}).Where("magang_id = ?", magang.ID).Count(&count).Error
+// 		if err != nil {
+// 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 			return
+// 		}
 
-		var resp entity.MagangRespData
-		resp.CreatedAt = magang.CreatedAt
-		resp.Logo = magang.Logo
-		resp.Perusahaan = magang.Perusahaan
-		resp.Lokasi = magang.Lokasi
-		resp.Deskripsi = magang.Deskripsi
-		resp.Applied = uint(count)
-		resp.Rate = magang.Rate
-		resp.Fee = magang.Fee
-		resp.JangkaWaktu = magang.JangkaWaktu
-		resp.StatusMagang = magang.StatusMagang
+// 		var resp entity.MagangRespHome
+// 		resp.CreatedAt = magang.CreatedAt
+// 		resp.Logo = magang.Logo
+// 		resp.Perusahaan = magang.Perusahaan
+// 		resp.Lokasi = magang.Lokasi
+// 		resp.Deskripsi = magang.Deskripsi
+// 		resp.Applied = uint(count)
+// 		resp.Rate = magang.Rate
+// 		resp.Fee = magang.Fee
+// 		resp.JangkaWaktu = magang.JangkaWaktu
+// 		resp.StatusMagang = magang.StatusMagang
 
-		var skill []entity.Skill
-		if err := h.db.Model(&magang).Association("Skill").Find(&skill); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-			return
-		}
-		var skills []entity.RespSkill
-		for _, s := range skill {
-			skills = append(skills, entity.RespSkill{Nama: s.Nama})
-		}
-		resp.Skill = skills
+// 		var skill []entity.Skill
+// 		if err := h.db.Model(&magang).Association("Skill").Find(&skill); err != nil {
+// 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 			return
+// 		}
+// 		var skills []entity.RespSkill
+// 		for _, s := range skill {
+// 			skills = append(skills, entity.RespSkill{Nama: s.Nama})
+// 		}
+// 		resp.Skill = skills
 
-		var interest []entity.Interest
-		if err := h.db.Model(&magang).Association("Interest").Find(&interest); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-			return
-		}
-		var interests []entity.RespInterest
-		for _, s := range interest {
-			interests = append(interests, entity.RespInterest{Nama: s.Nama})
-		}
-		resp.Interest = interests
+// 		var interest []entity.Interest
+// 		if err := h.db.Model(&magang).Association("Interest").Find(&interest); err != nil {
+// 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 			return
+// 		}
+// 		var interests []entity.RespInterest
+// 		for _, s := range interest {
+// 			interests = append(interests, entity.RespInterest{Nama: s.Nama})
+// 		}
+// 		resp.Interest = interests
 
-		magangs = append(magangs, resp)
-	}
+// 		magangs = append(magangs, resp)
+// 	}
 
-	if magangs != nil {
-		h.SuccessResponse(ctx, http.StatusOK, "Success", magangs, &magangParam.PaginationParam)
-	} else {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "Lowongan magang tidak ditemukan", nil)
-		return
-	}
-}
+// 	if magangs != nil {
+// 		h.SuccessResponse(ctx, http.StatusOK, "Success", magangs, &magangParam.PaginationParam)
+// 	} else {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, "Lowongan magang tidak ditemukan", nil)
+// 		return
+// 	}
+// }
 
 func (h *handler) addNewMagang(ctx *gin.Context) {
 	var magangBody entity.MagangAdd
@@ -288,7 +288,7 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 
 	magangParam.ProcessPagination(totalElements)
 
-	var magangs []entity.MagangRespData
+	var magangs []entity.MagangRespHome
 	for _, magang := range magangDB {
 
 		var count int64
@@ -298,7 +298,7 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 			return
 		}
 
-		var resp entity.MagangRespData
+		var resp entity.MagangRespHome
 		resp.CreatedAt = magang.CreatedAt
 		resp.Logo = magang.Logo
 		resp.Perusahaan = magang.Perusahaan
@@ -358,6 +358,47 @@ func (h *handler) getMagangData(ctx *gin.Context) {
 		return
 	}
 
+	var magangsDB []entity.Magang
+
+	if err := h.db.
+		Model(magangsDB).
+		Limit(3).
+		Order("rate desc").
+		Find(&magangsDB).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	var rekoms []entity.MagangRekomendasiData
+	for _, rekom := range magangsDB {
+
+		var count int64
+		err := h.db.Model(&entity.User{}).Where("magangs.id = ?", magangDB.ID).Joins("JOIN user_magangs ON users.id = user_magangs.user_id JOIN magangs ON user_magangs.magang_id = magangs.id").Count(&count).Error
+		if err != nil {
+			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+			return
+		}
+
+		var interests entity.RespInterest
+		errr := h.db.Model(&rekom).Association("Interest").Find(&interests)
+		if errr != nil {
+			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+			return
+		}
+
+		rekoms = append(rekoms, entity.MagangRekomendasiData{
+			CreatedAt:    rekom.CreatedAt,
+			ID:           rekom.ID,
+			Logo:         rekom.Logo,
+			Lokasi:       rekom.Lokasi,
+			StatusMagang: rekom.StatusMagang,
+
+			Apllied: uint(count),
+
+			Interest: interests,
+		})
+	}
+
 	var resp entity.MagangRespData
 
 	errrr := h.db.Where("id = ?", magangBody.ID).Take(&magangDB).Error
@@ -366,21 +407,9 @@ func (h *handler) getMagangData(ctx *gin.Context) {
 		return
 	}
 
-	var count int64
-	errr := h.db.Model(&entity.User{}).Where("magang_id = ?", magangDB.ID).Count(&count).Error
-	if errr != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
-
-	resp.CreatedAt = magangDB.CreatedAt
-	resp.Logo = magangDB.Logo
+	resp.Rekomendasi = rekoms
 	resp.Perusahaan = magangDB.Perusahaan
-	resp.Lokasi = magangDB.Lokasi
 	resp.Deskripsi = magangDB.Deskripsi
-	resp.Applied = uint(count)
-	resp.Rate = magangDB.Rate
-	resp.Fee = magangDB.Fee
 	resp.JangkaWaktu = magangDB.JangkaWaktu
 	resp.StatusMagang = magangDB.StatusMagang
 

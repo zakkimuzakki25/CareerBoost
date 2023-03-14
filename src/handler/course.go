@@ -4,7 +4,6 @@ import (
 	"CareerBoost/src/entity"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,19 +33,11 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 
 		playl.Nama = playlist.Nama
 		playl.CourseID = courseDB.ID
+		playl.Durasi = playlist.Durasi
 
 		var videos []entity.Video
-		count := 0
 
 		for _, video := range playlist.Video {
-
-			durasi, err := time.ParseDuration(video.Durasi)
-			if err != nil {
-				h.ErrorResponse(ctx, http.StatusBadRequest, "invalid video duration", nil)
-				return
-			}
-
-			count += int(durasi)
 
 			videos = append(videos, entity.Video{
 				Link:       video.Link,
@@ -56,7 +47,6 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 			})
 		}
 
-		playl.Durasi = time.Duration(count)
 		playl.Video = videos
 
 		if err := h.db.Create(&playl).Error; err != nil {

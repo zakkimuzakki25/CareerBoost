@@ -24,8 +24,28 @@ type MagangReqByID struct {
 	ID uint `json:"id"`
 }
 
+type MagangRekomendasiData struct {
+	CreatedAt    time.Time    `json:"created_at"`
+	ID           uint         `json:"id"`
+	Logo         string       `json:"logo"`
+	Interest     RespInterest `json:"interest"`
+	Lokasi       string       `json:"lokasi"`
+	Apllied      uint         `json:"applied"`
+	StatusMagang string       `json:"status_magang"`
+}
+
 type MagangRespData struct {
-	CreatedAt    time.Time      `json:"createdAt"`
+	Rekomendasi  []MagangRekomendasiData `json:"rekomendasi"`
+	Perusahaan   string                  `json:"perusahaan"`
+	Skill        []RespSkill             `json:"skill"`
+	Interest     []RespInterest          `json:"interest"`
+	Deskripsi    string                  `json:"deskripsi"`
+	JangkaWaktu  string                  `json:"jangka_waktu"`
+	StatusMagang string                  `json:"status_magang"`
+}
+
+type MagangRespHome struct {
+	CreatedAt    time.Time      `json:"created_at"`
 	Logo         string         `json:"logo"`
 	Perusahaan   string         `json:"perusahaan"`
 	Skill        []RespSkill    `json:"skill"`
