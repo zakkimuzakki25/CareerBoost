@@ -27,14 +27,14 @@ type User struct {
 
 type UserRegister struct {
 	FullName   string `json:"full_name" gorm:"NOT NULL" binding:"required"`
-	Username   string `json:"username" gorm:"NOT NULL" binding:"required"`
-	Email      string `json:"email" gorm:"NOT NULL" binding:"required"`
-	Password   string `json:"password" gorm:"NOT NULL" binding:"required"`
+	Username   string `json:"username" gorm:"NOT NULL" binding:"required,min=5,max=20"`
+	Email      string `json:"email" gorm:"NOT NULL" binding:"required,email"`
+	Password   string `json:"password" gorm:"NOT NULL" binding:"required,min=8"`
 	InterestID []uint `json:"interestID" gorm:"NOT NULL"`
 }
 
 type UserLogin struct {
-	Email    string `json:"email" gorm:"NOT NULL" binding:"required"`
+	Email    string `json:"email" gorm:"NOT NULL" binding:"required,email"`
 	Password string `json:"password" gorm:"NOT NULL" binding:"required"`
 }
 
