@@ -15,7 +15,7 @@ func (h *handler) userRegister(ctx *gin.Context) {
 	var userBody entity.UserRegister
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "Masukkan data yang benar", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Masukkan data dengan benar", nil)
 		return
 	}
 

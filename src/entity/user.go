@@ -34,7 +34,7 @@ type UserRegister struct {
 }
 
 type UserLogin struct {
-	Email    string `json:"email" gorm:"NOT NULL" binding:"required,email"`
+	Email    string `json:"email" gorm:"NOT NULL" binding:"required"`
 	Password string `json:"password" gorm:"NOT NULL" binding:"required"`
 }
 
