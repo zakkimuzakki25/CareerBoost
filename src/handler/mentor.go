@@ -298,6 +298,7 @@ func (h *handler) getMentorFilter(ctx *gin.Context) {
 		}
 
 		var resp entity.MentorRespData
+		resp.Perusahaan = mentor.Perusahaan
 		resp.ID = mentor.ID
 		resp.ProfilePhoto = mentor.ProfilePhoto
 		resp.FullName = mentor.FullName

@@ -14,6 +14,7 @@ type Mentor struct {
 	Rate         float32    `json:"rate"`
 	Fee          float32    `json:"fee"`
 	Exp          []Exp      `json:"exp"`
+	Perusahaan   string     `json:"perusahaan"`
 	WA           string     `json:"wa"`
 	IG           string     `json:"ig"`
 	Email        string     `json:"email"`
@@ -35,6 +36,7 @@ type MentorRespData struct {
 	Rate         float32        `json:"rate"`
 	Fee          float32        `json:"fee"`
 	Exp          []ExpResp      `json:"exp"`
+	Perusahaan   string         `json:"perusahaan"`
 }
 
 type MentorRespDataLangganan struct {
