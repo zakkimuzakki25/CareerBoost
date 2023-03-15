@@ -34,6 +34,7 @@ type MentorRespData struct {
 	Deskripsi    string         `json:"deskripsi"`
 	Rate         float32        `json:"rate"`
 	Fee          float32        `json:"fee"`
+	Exp          []ExpResp      `json:"exp"`
 }
 
 type MentorRespDataLangganan struct {

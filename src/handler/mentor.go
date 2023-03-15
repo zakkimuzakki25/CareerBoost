@@ -185,6 +185,8 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 		})
 	}
 
+	mentorDB.Exp = exps
+
 	var skills []entity.Skill
 	if err := h.db.Find(&skills, mentorBody.Skill).Error; err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "interest not found", nil)
@@ -278,13 +280,32 @@ func (h *handler) getMentorFilter(ctx *gin.Context) {
 	var mentors []entity.MentorRespData
 	for _, mentor := range mentorDB {
 
+		var mentorExp entity.Mentor
+		if err := h.db.Preload("Exp").Where("id = ?", mentor.ID).Take(&mentorExp).Error; err != nil {
+			h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+			return
+		}
+
+		var exps []entity.ExpResp
+		for _, exp := range mentorExp.Exp {
+			if exp.MentorID == mentorExp.ID {
+				exps = append(exps, entity.ExpResp{
+					Logo:       exp.Logo,
+					Perusahaan: exp.Perusahaan,
+					Skill:      exp.Skill,
+				})
+			}
+		}
+
 		var resp entity.MentorRespData
+		resp.ID = mentor.ID
 		resp.ProfilePhoto = mentor.ProfilePhoto
 		resp.FullName = mentor.FullName
 		resp.Lokasi = mentor.Lokasi
 		resp.Deskripsi = mentor.Deskripsi
 		resp.Rate = mentor.Rate
 		resp.Fee = mentor.Fee
+		resp.Exp = exps
 
 		var skill []entity.Skill
 		if err := h.db.Model(&mentor).Association("Skill").Find(&skill); err != nil {
