@@ -24,6 +24,7 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 	courseDB.Rate = courseBody.Rate
 	courseDB.Price = courseBody.Price
 	courseDB.InterestID = courseBody.InterestID
+	courseDB.Vote = courseBody.Vote
 
 	if err := h.db.Create(&courseDB).Error; err != nil {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)

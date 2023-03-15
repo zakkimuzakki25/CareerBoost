@@ -720,60 +720,88 @@ func (h *handler) userGetRiwayat(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
 }
 
-// func (h *handler) userGetLangganan(ctx *gin.Context) {
-// 	user, exist := ctx.Get("user")
-// 	if !exist {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-// 		return
-// 	}
+func (h *handler) userGetLangganan(ctx *gin.Context) {
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
 
-// 	claims, ok := user.(entity.UserClaims)
-// 	if !ok {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-// 		return
-// 	}
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
 
-// 	userID := claims.ID
+	userID := claims.ID
 
-// 	type respLanggananCourse struct {
-// 		ID      uint              `json:"id"`
-// 		Foto    string            `json:"foto"`
-// 		Judul   string            `json:"judul"`
-// 	}
+	type respLanggananCourse struct {
+		ID    uint   `json:"id"`
+		Judul string `json:"judul"`
+		Foto  string `json:"foto"`
+	}
 
-// 	type respLanggananMentor struct {
-// 		Nama         string `json:"nama"`
-// 		PhotoProfile string `json:"photo_profile"`
-// 		Wa           string `json:"wa"`
-// 		Ig           string `json:"ig"`
-// 		Email        string `json:"email"`
-// 	}
+	type respLanggananMentor struct {
+		FullName     string `json:"full_name"`
+		PhotoProfile string `json:"photo_profile"`
+		WA           string `json:"wa"`
+		IG           string `json:"ig"`
+		Email        string `json:"email"`
+	}
 
-// 	type respLangganan struct {
-// 		Course respLanggananCourse `json:"course"`
-// 		Mentor respLanggananMentor `json:"mentor"`
-// 	}
+	type respLangganan struct {
+		Course respLanggananCourse `json:"course"`
+		Mentor respLanggananMentor `json:"mentor"`
+	}
 
-// 	mentor := userDB.Mentor
-// 	historyMentor := respLanggananMentor{
-// 		Nama:         mentor.FullName,
-// 		PhotoProfile: mentor.PhotoProfile,
-// 		Wa:           mentor.Wa,
-// 		Ig:           mentor.Ig,
-// 		Email:        mentor.Email,
-// 	}
+	var resp respLangganan
 
-// 	var historyCourse respLanggananCourse
+	var langgananMentor respLanggananMentor
+	var mentorDB entity.Mentor
+	err := h.db.
+		Joins("JOIN user_mentors ON user_mentors.mentor_id = mentors.id").
+		Where("user_mentors.user_id = ?", userID).
+		Order("mentors.created_at DESC").
+		Limit(1).
+		First(&mentorDB).
+		Error
 
-// 		ID:      course.ID,
-// 		Foto:    course.Foto,
-// 		Judul:   course.Judul,
-// 		Interest: interest,
+	if err != nil {
+		langgananMentor.FullName = ""
+		langgananMentor.Email = ""
+		langgananMentor.PhotoProfile = ""
+		langgananMentor.IG = ""
+		langgananMentor.WA = ""
+	} else {
+		langgananMentor.FullName = mentorDB.FullName
+		langgananMentor.Email = mentorDB.Email
+		langgananMentor.PhotoProfile = mentorDB.ProfilePhoto
+		langgananMentor.IG = mentorDB.IG
+		langgananMentor.WA = mentorDB.WA
+	}
 
-// 	var resp respLangganan
+	var langgananCourse respLanggananCourse
+	var courseDB entity.Course
+	err2 := h.db.
+		Joins("JOIN user_courses ON user_courses.course_id = courses.id").
+		Where("user_courses.user_id = ?", userID).
+		Order("courses.created_at DESC").
+		Limit(1).
+		First(&courseDB).
+		Error
 
-// 	resp.Mentor = historiesMentor
-// 	resp.Course = historiesCourse
+	if err2 != nil {
+		langgananCourse.ID = 0
+		langgananCourse.Foto = ""
+		langgananCourse.Judul = ""
+	} else {
+		langgananCourse.ID = courseDB.ID
+		langgananCourse.Foto = courseDB.Foto
+		langgananCourse.Judul = courseDB.Judul
+	}
 
-// 	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
-// }
+	resp.Mentor = langgananMentor
+	resp.Course = langgananCourse
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
+}

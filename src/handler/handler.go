@@ -58,7 +58,7 @@ func (h *handler) registerRoutes() {
 	api.PUT("/profile/photo/update", h.userUploadPhotoProfile)
 	api.GET("/profile", h.userGetProfile)
 	api.GET("/profile/history", h.userGetRiwayat)
-	// api.GET("/profile/langganan", h.userGetLangganan)
+	api.GET("/profile/langganan", h.userGetLangganan)
 
 	api.GET("/mentorinfo/rekomendasi", h.getMagangRecomendation)
 	api.GET("/mentorinfo", h.getMentorFilter)
