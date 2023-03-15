@@ -719,3 +719,61 @@ func (h *handler) userGetRiwayat(ctx *gin.Context) {
 
 	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
 }
+
+// func (h *handler) userGetLangganan(ctx *gin.Context) {
+// 	user, exist := ctx.Get("user")
+// 	if !exist {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+// 		return
+// 	}
+
+// 	claims, ok := user.(entity.UserClaims)
+// 	if !ok {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+// 		return
+// 	}
+
+// 	userID := claims.ID
+
+// 	type respLanggananCourse struct {
+// 		ID      uint              `json:"id"`
+// 		Foto    string            `json:"foto"`
+// 		Judul   string            `json:"judul"`
+// 	}
+
+// 	type respLanggananMentor struct {
+// 		Nama         string `json:"nama"`
+// 		PhotoProfile string `json:"photo_profile"`
+// 		Wa           string `json:"wa"`
+// 		Ig           string `json:"ig"`
+// 		Email        string `json:"email"`
+// 	}
+
+// 	type respLangganan struct {
+// 		Course respLanggananCourse `json:"course"`
+// 		Mentor respLanggananMentor `json:"mentor"`
+// 	}
+
+// 	mentor := userDB.Mentor
+// 	historyMentor := respLanggananMentor{
+// 		Nama:         mentor.FullName,
+// 		PhotoProfile: mentor.PhotoProfile,
+// 		Wa:           mentor.Wa,
+// 		Ig:           mentor.Ig,
+// 		Email:        mentor.Email,
+// 	}
+
+// 	var historyCourse respLanggananCourse
+
+// 		ID:      course.ID,
+// 		Foto:    course.Foto,
+// 		Judul:   course.Judul,
+// 		Interest: interest,
+
+// 	var resp respLangganan
+
+// 	resp.Mentor = historiesMentor
+// 	resp.Course = historiesCourse
+
+// 	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
+// }

@@ -10,7 +10,7 @@ type Mentor struct {
 	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(255);NOT NULL"`
 	Skill        []Skill    `json:"skillID" gorm:"many2many:mentors_skill"`
 	Interest     []Interest `json:"interestID" gorm:"many2many:mentors_interest"`
-	Deskripsi    string     `json:"deskripsi" gorm:"type:VARCHAR(255);NOT NULL"`
+	Deskripsi    string     `json:"deskripsi" gorm:"type:text;NOT NULL"`
 	Rate         float32    `json:"rate"`
 	Fee          float32    `json:"fee"`
 	Exp          []Exp      `json:"exp"`

@@ -45,7 +45,7 @@ func (h *handler) registerRoutes() {
 	// Post
 
 	h.http.POST("/admin/login", h.adminLogin)
-	api.GET("/logout", h.adminLogout)
+	admin.GET("/logout", h.adminLogout)
 	admin.POST("/mentor/post", h.addNewMentor)
 	admin.POST("/magang/post", h.addNewMagang)
 	admin.POST("/course/post", h.addNewCourse)
