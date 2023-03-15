@@ -14,6 +14,7 @@ type Course struct {
 	Playlist   []Playlist `json:"playlist"`
 	Rate       float32    `json:"rate"`
 	Price      float32    `json:"price"`
+	Vote       uint       `json:"vote"`
 }
 
 type CourseAdd struct {
@@ -25,6 +26,7 @@ type CourseAdd struct {
 	Rate       float32    `json:"rate"`
 	Price      float32    `json:"price"`
 	InterestID uint       `json:"interest_id"`
+	Vote       uint       `json:"vote"`
 }
 
 type CourseRespData struct {
