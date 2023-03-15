@@ -15,6 +15,10 @@ func (h *handler) userRegister(ctx *gin.Context) {
 	var userBody entity.UserRegister
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
+		if len(userBody.Password) <= 8 {
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Password minimal 8 karakter", nil)
+			return
+		}
 		h.ErrorResponse(ctx, http.StatusBadRequest, "Masukkan data dengan benar", nil)
 		return
 	}
@@ -312,57 +316,57 @@ func (h *handler) UserAddMentor(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Berhasil berlangganan", nil, nil)
 }
 
-func (h *handler) userGetMentors(ctx *gin.Context) {
-	user, exist := ctx.Get("user")
-	if !exist {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-		return
-	}
+// func (h *handler) userGetMentors(ctx *gin.Context) {
+// 	user, exist := ctx.Get("user")
+// 	if !exist {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+// 		return
+// 	}
 
-	claims, ok := user.(entity.UserClaims)
-	if !ok {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-		return
-	}
+// 	claims, ok := user.(entity.UserClaims)
+// 	if !ok {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+// 		return
+// 	}
 
-	userID := claims.ID
+// 	userID := claims.ID
 
-	type respHistory struct {
-		ID       uint                `json:"id"`
-		Nama     string              `json:"nama"`
-		Interest entity.RespInterest `json:"interest"`
-	}
+// 	type respHistory struct {
+// 		ID       uint                `json:"id"`
+// 		Nama     string              `json:"nama"`
+// 		Interest entity.RespInterest `json:"interest"`
+// 	}
 
-	var userDB entity.User
-	err := h.db.Preload("Mentor.Interest").Where("id = ?", userID).Take(&userDB).Error
-	if err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-		return
-	}
+// 	var userDB entity.User
+// 	err := h.db.Preload("Mentor.Interest").Where("id = ?", userID).Take(&userDB).Error
+// 	if err != nil {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+// 		return
+// 	}
 
-	mentors := userDB.Mentor
-	if len(mentors) == 0 {
-		h.SuccessResponse(ctx, http.StatusOK, "Success", nil, nil)
-		return
-	}
+// 	mentors := userDB.Mentor
+// 	if len(mentors) == 0 {
+// 		h.SuccessResponse(ctx, http.StatusOK, "Success", nil, nil)
+// 		return
+// 	}
 
-	var histories []respHistory
-	for _, mentor := range mentors {
-		var interest entity.RespInterest
-		if len(mentor.Interest) > 0 {
-			interest = entity.RespInterest{
-				Nama: mentor.Interest[0].Nama,
-			}
-		}
-		histories = append(histories, respHistory{
-			ID:       mentor.ID,
-			Nama:     mentor.FullName,
-			Interest: interest,
-		})
-	}
+// 	var histories []respHistory
+// 	for _, mentor := range mentors {
+// 		var interest entity.RespInterest
+// 		if len(mentor.Interest) > 0 {
+// 			interest = entity.RespInterest{
+// 				Nama: mentor.Interest[0].Nama,
+// 			}
+// 		}
+// 		histories = append(histories, respHistory{
+// 			ID:       mentor.ID,
+// 			Nama:     mentor.FullName,
+// 			Interest: interest,
+// 		})
+// 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "ini mentor", histories, nil)
-}
+// 	h.SuccessResponse(ctx, http.StatusOK, "ini mentor", histories, nil)
+// }
 
 func (h *handler) UserAddMagang(ctx *gin.Context) {
 	var reqBody entity.MagangReqByID
@@ -411,59 +415,59 @@ func (h *handler) UserAddMagang(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Berhasil apply magang", nil, nil)
 }
 
-func (h *handler) userGetMagangs(ctx *gin.Context) {
-	user, exist := ctx.Get("user")
-	if !exist {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-		return
-	}
+// func (h *handler) userGetMagangs(ctx *gin.Context) {
+// 	user, exist := ctx.Get("user")
+// 	if !exist {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+// 		return
+// 	}
 
-	claims, ok := user.(entity.UserClaims)
-	if !ok {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-		return
-	}
+// 	claims, ok := user.(entity.UserClaims)
+// 	if !ok {
+// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+// 		return
+// 	}
 
-	userID := claims.ID
+// 	userID := claims.ID
 
-	type respHistory struct {
-		ID         uint                `json:"id"`
-		Logo       string              `json:"logo"`
-		Perusahaan string              `json:"perusahaan"`
-		Interest   entity.RespInterest `json:"interest"`
-	}
+// 	type respHistory struct {
+// 		ID         uint                `json:"id"`
+// 		Logo       string              `json:"logo"`
+// 		Perusahaan string              `json:"perusahaan"`
+// 		Interest   entity.RespInterest `json:"interest"`
+// 	}
 
-	var userDB entity.User
-	err := h.db.Preload("Magang.Interest").Where("id = ?", userID).Take(&userDB).Error
-	if err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-		return
-	}
+// var userDB entity.User
+// err := h.db.Preload("Magang.Interest").Where("id = ?", userID).Take(&userDB).Error
+// if err != nil {
+// 	h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+// 	return
+// }
 
-	if len(userDB.Magang) == 0 {
-		h.SuccessResponse(ctx, http.StatusOK, "Success", nil, nil)
-		return
-	}
+// 	if len(userDB.Magang) == 0 {
+// 		h.SuccessResponse(ctx, http.StatusOK, "Success", nil, nil)
+// 		return
+// 	}
 
-	magangs := userDB.Magang
-	var histories []respHistory
-	for _, magang := range magangs {
-		var interest entity.RespInterest
-		if len(magang.Interest) > 0 {
-			interest = entity.RespInterest{
-				Nama: magang.Interest[0].Nama,
-			}
-		}
-		histories = append(histories, respHistory{
-			ID:         magang.ID,
-			Logo:       magang.Logo,
-			Perusahaan: magang.Perusahaan,
-			Interest:   interest,
-		})
-	}
+// 	magangs := userDB.Magang
+// 	var histories []respHistory
+// 	for _, magang := range magangs {
+// 		var interest entity.RespInterest
+// 		if len(magang.Interest) > 0 {
+// 			interest = entity.RespInterest{
+// 				Nama: magang.Interest[0].Nama,
+// 			}
+// 		}
+// 		histories = append(histories, respHistory{
+// 			ID:         magang.ID,
+// 			Logo:       magang.Logo,
+// 			Perusahaan: magang.Perusahaan,
+// 			Interest:   interest,
+// 		})
+// 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "ini magang", histories, nil)
-}
+// 	h.SuccessResponse(ctx, http.StatusOK, "ini magang", histories, nil)
+// }
 
 func (h *handler) UserAddCourse(ctx *gin.Context) {
 	var reqBody entity.CourseReqByID
@@ -528,36 +532,166 @@ func (h *handler) UserAddCourse(ctx *gin.Context) {
 // 	userID := claims.ID
 
 // 	type respHistory struct {
-// 		ID    uint   `json:"id"`
-// 		Judul string `json:"judul"`
-// 		Intro string `json:"intro"`
+// 		ID       uint                `json:"id"`
+// 		Judul    string              `json:"judul"`
+// 		Interest entity.RespInterest `json:"interest"`
 // 	}
 
-// 	var userDB entity.User
-// 	err := h.db.Preload("Magang.Interest").Where("id = ?", userID).Take(&userDB).Error
+// 	var courseDB []entity.Course
+// 	err := h.db.
+// 		Joins("JOIN user_courses ON user_courses.course_id = courses.id").
+// 		Where("user_courses.user_id = ?", userID).
+// 		Find(&courseDB).Error
 // 	if err != nil {
 // 		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 // 		return
 // 	}
 
-// 	if len(userDB.Magang) == 0 {
-// 		h.SuccessResponse(ctx, http.StatusOK, "Success", nil, nil)
-// 		return
-// 	}
-
-// 	magangs := userDB.Magang
 // 	var histories []respHistory
-// 	for _, magang := range magangs {
+// 	for _, course := range courseDB {
 // 		var interest entity.RespInterest
-// 		if len(magang.Interest) > 0 {
+
+// 		if course.InterestID != 0 {
+// 			interests := &entity.Interest{}
+// 			err := h.db.Model(interests).Where("id = ?", course.InterestID).Take(&interests).Error
+// 			if err != nil {
+// 				h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+// 				return
+// 			}
 // 			interest = entity.RespInterest{
-// 				Nama: magang.Interest[0].Nama,
+// 				Nama: interests.Nama,
 // 			}
 // 		}
+
 // 		histories = append(histories, respHistory{
-// 			ID: magang.ID,
+// 			ID:       course.ID,
+// 			Judul:    course.Judul,
+// 			Interest: interest,
 // 		})
 // 	}
 
-// 	h.SuccessResponse(ctx, http.StatusOK, "ini magang", histories, nil)
+// 	h.SuccessResponse(ctx, http.StatusOK, "Success", histories, nil)
 // }
+
+func (h *handler) userGetRiwayat(ctx *gin.Context) {
+	user, exist := ctx.Get("user")
+	if !exist {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
+		return
+	}
+
+	claims, ok := user.(entity.UserClaims)
+	if !ok {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
+		return
+	}
+
+	userID := claims.ID
+
+	type respHistoryMagang struct {
+		Logo       string              `json:"logo"`
+		Perusahaan string              `json:"perusahaan"`
+		Interest   entity.RespInterest `json:"interest"`
+	}
+
+	type respHistoryCourse struct {
+		Judul    string              `json:"judul"`
+		Interest entity.RespInterest `json:"interest"`
+	}
+
+	type respHistoryMentor struct {
+		Nama     string              `json:"nama"`
+		Interest entity.RespInterest `json:"interest"`
+	}
+
+	type respHistory struct {
+		Magang []respHistoryMagang `json:"magang"`
+		Course []respHistoryCourse `json:"course"`
+		Mentor []respHistoryMentor `json:"mentor"`
+	}
+
+	var userDB entity.User
+	err := h.db.Preload("Mentor.Interest").Where("id = ?", userID).Take(&userDB).Error
+	if err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	mentors := userDB.Mentor
+	var historiesMentor []respHistoryMentor
+	for _, mentor := range mentors {
+		var interest entity.RespInterest
+		if len(mentor.Interest) > 0 {
+			interest = entity.RespInterest{
+				Nama: mentor.Interest[0].Nama,
+			}
+		}
+		historiesMentor = append(historiesMentor, respHistoryMentor{
+			Nama:     mentor.FullName,
+			Interest: interest,
+		})
+	}
+
+	var userDBMagang entity.User
+	errrr := h.db.Preload("Magang.Interest").Where("id = ?", userID).Take(&userDBMagang).Error
+	if errrr != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	magangs := userDBMagang.Magang
+	var historiesMagang []respHistoryMagang
+	for _, magang := range magangs {
+		var interest entity.RespInterest
+		if len(magang.Interest) > 0 {
+			interest = entity.RespInterest{
+				Nama: magang.Interest[0].Nama,
+			}
+		}
+		historiesMagang = append(historiesMagang, respHistoryMagang{
+			Logo:       magang.Logo,
+			Perusahaan: magang.Perusahaan,
+			Interest:   interest,
+		})
+	}
+
+	var courseDB []entity.Course
+	errr := h.db.
+		Joins("JOIN user_courses ON user_courses.course_id = courses.id").
+		Where("user_courses.user_id = ?", userID).
+		Find(&courseDB).Error
+	if errr != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	var historiesCourse []respHistoryCourse
+	for _, course := range courseDB {
+		var interest entity.RespInterest
+
+		if course.InterestID != 0 {
+			interests := &entity.Interest{}
+			err := h.db.Model(interests).Where("id = ?", course.InterestID).Take(&interests).Error
+			if err != nil {
+				h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+				return
+			}
+			interest = entity.RespInterest{
+				Nama: interests.Nama,
+			}
+		}
+
+		historiesCourse = append(historiesCourse, respHistoryCourse{
+			Judul:    course.Judul,
+			Interest: interest,
+		})
+	}
+
+	var resp respHistory
+
+	resp.Mentor = historiesMentor
+	resp.Course = historiesCourse
+	resp.Magang = historiesMagang
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
+}

@@ -51,9 +51,9 @@ type CourseSearch struct {
 
 type Playlist struct {
 	gorm.Model
-	Nama     string  `gorm:"type:VARCHAR(55)"`
+	Nama     string  `json:"nama" gorm:"type:VARCHAR(55)"`
 	Video    []Video `json:"video"`
-	Durasi   string  `json:"durasi"`
+	Durasi   string  `json:"durasi" gorm:"type:VARCHAR(55)"`
 	Course   Course  `json:"course"`
 	CourseID uint    `json:"course_id"`
 }
