@@ -127,10 +127,12 @@ func (h *handler) getAllCourse(ctx *gin.Context) {
 	courseParam.ProcessPagination(totalElements)
 
 	type resp struct {
+		ID        uint    `json:"id"`
 		Foto      string  `json:"foto"`
 		Judul     string  `json:"judul"`
 		Deskripsi string  `json:"deskripsi"`
 		Rate      float32 `json:"rate"`
+		Vote      uint    `json:"vote"`
 		Price     float32 `json:"price"`
 	}
 
@@ -138,6 +140,8 @@ func (h *handler) getAllCourse(ctx *gin.Context) {
 	for _, course := range courseBody {
 
 		var resps resp
+		resps.ID = course.ID
+		resps.Vote = course.Vote
 		resps.Foto = course.Foto
 		resps.Judul = course.Judul
 		resps.Deskripsi = course.Deskripsi
@@ -219,10 +223,12 @@ func (h *handler) getAllCourseHome(ctx *gin.Context) {
 	courseParam.ProcessPagination(totalElements)
 
 	type resp struct {
+		ID        uint    `json:"id"`
 		Foto      string  `json:"foto"`
 		Judul     string  `json:"judul"`
 		Deskripsi string  `json:"deskripsi"`
 		Rate      float32 `json:"rate"`
+		Vote      uint    `json:"vote"`
 		Price     float32 `json:"price"`
 	}
 
@@ -230,6 +236,8 @@ func (h *handler) getAllCourseHome(ctx *gin.Context) {
 	for _, course := range courseBody {
 
 		var resps resp
+		resps.ID = course.ID
+		resps.Vote = course.Vote
 		resps.Foto = course.Foto
 		resps.Judul = course.Judul
 		resps.Deskripsi = course.Deskripsi
@@ -491,11 +499,13 @@ func (h *handler) getCourseInfo(ctx *gin.Context) {
 		Intro     string         `json:"intro"`
 		Playlist  []RespPlaylist `json:"playlist"`
 		Rate      float32        `json:"rate"`
+		Vote      uint           `json:"vote"`
 		Price     float32        `json:"price"`
 	}
 
 	var resp CourseRespData
 
+	resp.Vote = courseDB.Vote
 	resp.Judul = courseDB.Judul
 	resp.Deskripsi = courseDB.Deskripsi
 	resp.Intro = courseDB.Intro
