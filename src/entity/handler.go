@@ -42,6 +42,10 @@ func (pp *PaginationParam) ProcessPagination(totalElements int64) {
 }
 
 type Filter struct {
-	InterestID []uint `json:"Interestid"`
-	Key        string `json:"key"`
+	InterestID []int  `form:"interestID[]"`
+	Key        string `form:"search"`
 }
+
+// type mentorParam struct {
+// 	ID uint `uri:"mentor_id" gorm:"column:id"`
+// }

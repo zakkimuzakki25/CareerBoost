@@ -37,7 +37,7 @@ type CourseRespData struct {
 }
 
 type CourseParam struct {
-	PostID int64 `uri:"course_id" gorm:"column:id"`
+	ID int64 `uri:"course_id" gorm:"column:id"`
 	PaginationParam
 }
 
@@ -46,7 +46,7 @@ type CourseReqByID struct {
 }
 
 type CourseSearch struct {
-	Key string `json:"key"`
+	Key string `form:"search"`
 }
 
 type Playlist struct {

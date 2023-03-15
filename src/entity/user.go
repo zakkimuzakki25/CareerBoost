@@ -26,7 +26,7 @@ type User struct {
 }
 
 type UserRegister struct {
-	FullName   string `json:"full_name" gorm:"NOT NULL" binding:"required"`
+	FullName   string `json:"full_name" gorm:"NOT NULL" binding:"required,max=50"`
 	Username   string `json:"username" gorm:"NOT NULL" binding:"required,min=5,max=20"`
 	Email      string `json:"email" gorm:"NOT NULL" binding:"required,email"`
 	Password   string `json:"password" gorm:"NOT NULL" binding:"required,min=8"`

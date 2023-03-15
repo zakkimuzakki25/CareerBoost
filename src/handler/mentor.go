@@ -8,73 +8,73 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *handler) getAllMentor(ctx *gin.Context) {
-	mentorDB := []entity.Mentor{}
-	err := h.db.Order("rate desc").Find(&mentorDB).Error
-	if err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-		return
-	}
+// func (h *handler) getAllMentor(ctx *gin.Context) {
+// 	mentorDB := []entity.Mentor{}
+// 	err := h.db.Order("rate desc").Find(&mentorDB).Error
+// 	if err != nil {
+// 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 		return
+// 	}
 
-	var mentors []entity.MentorRespHome
-	for _, mentor := range mentorDB {
-		var resp entity.MentorRespHome
-		resp.ID = mentor.ID
-		resp.ProfilePhoto = mentor.ProfilePhoto
-		resp.Nama = mentor.FullName
-		resp.Work = mentor.Work
-		resp.Lokasi = mentor.Lokasi
-		resp.Rate = mentor.Rate
-		resp.Deskripsi = mentor.Deskripsi
+// 	var mentors []entity.MentorRespHome
+// 	for _, mentor := range mentorDB {
+// 		var resp entity.MentorRespHome
+// 		resp.ID = mentor.ID
+// 		resp.ProfilePhoto = mentor.ProfilePhoto
+// 		resp.Nama = mentor.FullName
+// 		resp.Work = mentor.Work
+// 		resp.Lokasi = mentor.Lokasi
+// 		resp.Rate = mentor.Rate
+// 		resp.Deskripsi = mentor.Deskripsi
 
-		var skill []entity.Skill
-		if err := h.db.Model(&mentor).Association("Skill").Find(&skill); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-			return
-		}
-		var skills []entity.RespSkill
-		for _, s := range skill {
-			skills = append(skills, entity.RespSkill{Nama: s.Nama})
-		}
-		resp.Skill = skills
+// 		var skill []entity.Skill
+// 		if err := h.db.Model(&mentor).Association("Skill").Find(&skill); err != nil {
+// 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 			return
+// 		}
+// 		var skills []entity.RespSkill
+// 		for _, s := range skill {
+// 			skills = append(skills, entity.RespSkill{Nama: s.Nama})
+// 		}
+// 		resp.Skill = skills
 
-		var interest []entity.Interest
-		if err := h.db.Model(&mentor).Association("Interest").Find(&interest); err != nil {
-			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
-			return
-		}
-		var interests []entity.RespInterest
-		for _, s := range interest {
-			interests = append(interests, entity.RespInterest{Nama: s.Nama})
-		}
-		resp.Bidang = interests
+// 		var interest []entity.Interest
+// 		if err := h.db.Model(&mentor).Association("Interest").Find(&interest); err != nil {
+// 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+// 			return
+// 		}
+// 		var interests []entity.RespInterest
+// 		for _, s := range interest {
+// 			interests = append(interests, entity.RespInterest{Nama: s.Nama})
+// 		}
+// 		resp.Bidang = interests
 
-		if err := h.db.Preload("Exp").Where("id = ?", mentor.ID).Take(&mentor).Error; err != nil {
-			h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-			return
-		}
+// 		if err := h.db.Preload("Exp").Where("id = ?", mentor.ID).Take(&mentor).Error; err != nil {
+// 			h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+// 			return
+// 		}
 
-		var exps []entity.ExpResp
-		for _, exp := range mentor.Exp {
-			if exp.MentorID == mentor.ID {
-				exps = append(exps, entity.ExpResp{
-					Logo:       exp.Logo,
-					Perusahaan: exp.Perusahaan,
-					Skill:      exp.Skill,
-				})
-			}
-		}
-		resp.Exp = exps
+// 		var exps []entity.ExpResp
+// 		for _, exp := range mentor.Exp {
+// 			if exp.MentorID == mentor.ID {
+// 				exps = append(exps, entity.ExpResp{
+// 					Logo:       exp.Logo,
+// 					Perusahaan: exp.Perusahaan,
+// 					Skill:      exp.Skill,
+// 				})
+// 			}
+// 		}
+// 		resp.Exp = exps
 
-		mentors = append(mentors, resp)
-	}
+// 		mentors = append(mentors, resp)
+// 	}
 
-	h.SuccessResponse(ctx, http.StatusOK, "Success", mentors, nil)
-}
+// 	h.SuccessResponse(ctx, http.StatusOK, "Success", mentors, nil)
+// }
 
 func (h *handler) getMentorData(ctx *gin.Context) {
-	var mentorBody entity.MentorReqByID
-	if err := h.BindBody(ctx, &mentorBody); err != nil {
+	var mentorBody entity.MentorParam
+	if err := h.BindParam(ctx, &mentorBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal bindbody", nil)
 		return
 	}
@@ -123,11 +123,19 @@ func (h *handler) getMentorData(ctx *gin.Context) {
 }
 
 func (h *handler) getMentorExp(ctx *gin.Context) {
-	var mentorBody entity.MentorReqByID
-	if err := h.BindBody(ctx, &mentorBody); err != nil {
+	type mentorParam struct {
+		ID uint `uri:"mentor_id" gorm:"column:id"`
+	}
+
+	var mentorBody mentorParam
+	if err := h.BindParam(ctx, &mentorBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request", nil)
 		return
 	}
+
+	fmt.Println("================================")
+	fmt.Println(mentorBody.ID)
+	fmt.Println("================================")
 
 	var mentorDB entity.Mentor
 	if err := h.db.Preload("Exp").Where("id = ?", mentorBody.ID).Take(&mentorDB).Error; err != nil {
@@ -214,8 +222,8 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 
 func (h *handler) getMentorFilter(ctx *gin.Context) {
 	var mentorBody entity.Filter
-	if err := h.BindBody(ctx, &mentorBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body", nil)
+	if err := h.BindParam(ctx, &mentorBody); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 

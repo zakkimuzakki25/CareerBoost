@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -36,8 +34,8 @@ type MagangReqByID struct {
 }
 
 type MagangRekomendasiData struct {
-	CreatedAt    time.Time    `json:"created_at"`
 	ID           uint         `json:"id"`
+	Release      string       `json:"release"`
 	Logo         string       `json:"logo"`
 	Interest     RespInterest `json:"interest"`
 	Lokasi       string       `json:"lokasi"`
@@ -57,7 +55,8 @@ type MagangRespData struct {
 }
 
 type MagangRespHome struct {
-	CreatedAt    time.Time      `json:"created_at"`
+	ID           uint           `json:"id"`
+	Release      string         `json:"release"`
 	Logo         string         `json:"logo"`
 	Perusahaan   string         `json:"perusahaan"`
 	Skill        []RespSkill    `json:"skill"`
@@ -68,6 +67,18 @@ type MagangRespHome struct {
 	Rate         float32        `json:"rate"`
 	Fee          float32        `json:"fee"`
 	JangkaWaktu  string         `json:"jangka_waktu"`
+	StatusMagang string         `json:"status_magang"`
+}
+
+type MagangRespRekomendasi struct {
+	ID           uint           `json:"id"`
+	Release      string         `json:"release"`
+	Logo         string         `json:"logo"`
+	Perusahaan   string         `json:"perusahaan"`
+	Skill        []RespSkill    `json:"skill"`
+	Interest     []RespInterest `json:"interest"`
+	Lokasi       string         `json:"lokasi"`
+	Applied      uint           `json:"applied"`
 	StatusMagang string         `json:"status_magang"`
 }
 
@@ -87,6 +98,6 @@ type MagangAdd struct {
 }
 
 type MagangParam struct {
-	PostID int64 `uri:"magang_id" gorm:"column:id"`
+	ID int64 `uri:"magang_id" gorm:"column:id"`
 	PaginationParam
 }

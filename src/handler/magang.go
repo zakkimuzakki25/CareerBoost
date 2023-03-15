@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rvflash/elapsed"
 )
 
 // func (h *handler) getAllMagang(ctx *gin.Context) {
@@ -130,26 +131,25 @@ func (h *handler) getMagangRecomendation(ctx *gin.Context) {
 
 	magangParam.ProcessPagination(totalElements)
 
-	var magangs []entity.MagangRespHome
+	var magangs []entity.MagangRespRekomendasi
 	for _, magang := range magangDB {
 
 		var count int64
-		err := h.db.Model(&entity.User{}).Where("magang_id = ?", magang.ID).Count(&count).Error
+		err := h.db.Model(&entity.User{}).
+			Joins("JOIN user_magangs ON user_magangs.magang_id = ?", magang.ID).
+			Count(&count).Error
 		if err != nil {
 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 			return
 		}
 
-		var resp entity.MagangRespHome
-		resp.CreatedAt = magang.CreatedAt
+		var resp entity.MagangRespRekomendasi
+		resp.ID = magang.ID
+		resp.Release = elapsed.Time(magang.CreatedAt)
 		resp.Logo = magang.Logo
 		resp.Perusahaan = magang.Perusahaan
 		resp.Lokasi = magang.Lokasi
-		resp.Deskripsi = magang.Deskripsi
 		resp.Applied = uint(count)
-		resp.Rate = magang.Rate
-		resp.Fee = magang.Fee
-		resp.JangkaWaktu = magang.JangkaWaktu
 		resp.StatusMagang = magang.StatusMagang
 
 		var skill []entity.Skill
@@ -236,8 +236,8 @@ func (h *handler) addNewMagang(ctx *gin.Context) {
 
 func (h *handler) getMagangFilter(ctx *gin.Context) {
 	var magangBody entity.Filter
-	if err := h.BindBody(ctx, &magangBody); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body magang", nil)
+	if err := h.BindParam(ctx, &magangBody); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
@@ -257,13 +257,15 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 
 	if len(magangBody.InterestID) > 0 {
 		db = db.Joins("JOIN magangs_interest ON magangs_interest.magang_id = magangs.id").
-			Where("magangs_interest.interest_id IN (?)", magangBody.InterestID)
+			Where("magangs_interest.interest_id = (?)", magangBody.InterestID)
 	}
+
 	if magangBody.Key != "" {
 		db = db.Where("perusahaan LIKE ?", "%"+magangBody.Key+"%")
 	}
 
 	if err := db.Find(&magangDB).Error; err != nil {
+		fmt.Println(err.Error())
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
@@ -276,8 +278,9 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 
 	if len(magangBody.InterestID) > 0 {
 		db = db.Joins("JOIN magangs_interest ON magangs_interest.magang_id = magangs.id").
-			Where("magangs_interest.interest_id IN (?)", magangBody.InterestID)
+			Where("magangs_interest.interest_id = (?)", magangBody.InterestID)
 	}
+
 	if magangBody.Key != "" {
 		db = db.Where("perusahaan LIKE ?", "%"+magangBody.Key+"%")
 	}
@@ -293,14 +296,17 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 	for _, magang := range magangDB {
 
 		var count int64
-		err := h.db.Model(&entity.User{}).Where("magang_id = ?", magang.ID).Count(&count).Error
+		err := h.db.Model(&entity.User{}).
+			Joins("JOIN user_magangs ON user_magangs.magang_id = ?", magang.ID).
+			Count(&count).Error
 		if err != nil {
 			h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 			return
 		}
 
 		var resp entity.MagangRespHome
-		resp.CreatedAt = magang.CreatedAt
+		resp.ID = magang.ID
+		resp.Release = elapsed.Time(magang.CreatedAt)
 		resp.Logo = magang.Logo
 		resp.Perusahaan = magang.Perusahaan
 		resp.Lokasi = magang.Lokasi
@@ -345,8 +351,8 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 }
 
 func (h *handler) getMagangData(ctx *gin.Context) {
-	var magangBody entity.MagangReqByID
-	if err := h.BindBody(ctx, &magangBody); err != nil {
+	var magangBody entity.MagangParam
+	if err := h.BindParam(ctx, &magangBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body", nil)
 		return
 	}
@@ -388,7 +394,7 @@ func (h *handler) getMagangData(ctx *gin.Context) {
 		}
 
 		rekoms = append(rekoms, entity.MagangRekomendasiData{
-			CreatedAt:    rekom.CreatedAt,
+			Release:      elapsed.Time(rekom.CreatedAt),
 			ID:           rekom.ID,
 			Logo:         rekom.Logo,
 			Lokasi:       rekom.Lokasi,

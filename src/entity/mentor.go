@@ -69,7 +69,7 @@ type MentorAdd struct {
 }
 
 type MentorParam struct {
-	PostID int64 `uri:"mentor_id" gorm:"column:id"`
+	ID uint `uri:"mentor_id" gorm:"column:id"`
 	PaginationParam
 }
 

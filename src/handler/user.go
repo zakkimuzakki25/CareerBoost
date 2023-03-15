@@ -15,6 +15,10 @@ func (h *handler) userRegister(ctx *gin.Context) {
 	var userBody entity.UserRegister
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
+		if len(userBody.FullName) > 50 {
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Username minimal 5 karakter", nil)
+			return
+		}
 		if len(userBody.Username) < 5 {
 			h.ErrorResponse(ctx, http.StatusBadRequest, "Username minimal 5 karakter", nil)
 			return
@@ -286,9 +290,13 @@ func (h *handler) userGetHome(ctx *gin.Context) {
 }
 
 func (h *handler) UserAddMentor(ctx *gin.Context) {
-	var reqBody entity.MentorReqByID
+	type mentorParam struct {
+		ID uint `uri:"mentor_id" gorm:"column:id"`
+	}
 
-	if err := h.BindBody(ctx, &reqBody); err != nil {
+	var reqBody mentorParam
+
+	if err := h.BindParam(ctx, &reqBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request update", nil)
 		return
 	}
@@ -385,9 +393,9 @@ func (h *handler) UserAddMentor(ctx *gin.Context) {
 // }
 
 func (h *handler) UserAddMagang(ctx *gin.Context) {
-	var reqBody entity.MagangReqByID
+	var reqBody entity.MagangParam
 
-	if err := h.BindBody(ctx, &reqBody); err != nil {
+	if err := h.BindParam(ctx, &reqBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request update", nil)
 		return
 	}
@@ -486,9 +494,9 @@ func (h *handler) UserAddMagang(ctx *gin.Context) {
 // }
 
 func (h *handler) UserAddCourse(ctx *gin.Context) {
-	var reqBody entity.CourseReqByID
+	var reqBody entity.CourseParam
 
-	if err := h.BindBody(ctx, &reqBody); err != nil {
+	if err := h.BindParam(ctx, &reqBody); err != nil {
 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request update", nil)
 		return
 	}
