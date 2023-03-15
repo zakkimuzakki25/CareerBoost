@@ -15,8 +15,24 @@ func (h *handler) userRegister(ctx *gin.Context) {
 	var userBody entity.UserRegister
 
 	if err := h.BindBody(ctx, &userBody); err != nil {
-		if len(userBody.Password) <= 8 {
+		if len(userBody.Username) < 5 {
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Username minimal 5 karakter", nil)
+			return
+		}
+		if len(userBody.Username) > 20 {
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Username maximal 20 karakter", nil)
+			return
+		}
+		if len(userBody.Email) < 1 {
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Masukkan email dengan benar", nil)
+			return
+		}
+		if len(userBody.Password) < 8 {
 			h.ErrorResponse(ctx, http.StatusBadRequest, "Password minimal 8 karakter", nil)
+			return
+		}
+		if len(userBody.InterestID) < 1 {
+			h.ErrorResponse(ctx, http.StatusBadRequest, "Minimal pilih 1 ketertarikan", nil)
 			return
 		}
 		h.ErrorResponse(ctx, http.StatusBadRequest, "Masukkan data dengan benar", nil)
