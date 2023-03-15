@@ -14,7 +14,7 @@ type Mentor struct {
 	Rate         float32    `json:"rate"`
 	Fee          float32    `json:"fee"`
 	Exp          []Exp      `json:"exp"`
-	Perusahaan   string     `json:"perusahaan"`
+	Perusahaan   string     `json:"perusahaan" gorm:"type:text"`
 	WA           string     `json:"wa"`
 	IG           string     `json:"ig"`
 	Email        string     `json:"email"`

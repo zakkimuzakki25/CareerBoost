@@ -21,7 +21,7 @@ type PaginationParam struct {
 
 func (pp *PaginationParam) FormatPagination() {
 	if pp.Limit == 0 {
-		pp.Limit = 3
+		pp.Limit = 8
 	}
 
 	if pp.Page == 0 {
