@@ -20,3 +20,8 @@ type Interest struct {
 type RespInterest struct {
 	Nama string `json:"nama"`
 }
+
+type RespInterestWithID struct {
+	Nama string `json:"nama"`
+	ID   uint   `json:"id"`
+}

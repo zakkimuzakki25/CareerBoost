@@ -240,9 +240,13 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
-	var interests []entity.RespInterest
+
+	var interests []entity.RespInterestWithID
 	for _, s := range interest {
-		interests = append(interests, entity.RespInterest{Nama: s.Nama})
+		interests = append(interests, entity.RespInterestWithID{
+			Nama: s.Nama,
+			ID:   s.ID,
+		})
 	}
 
 	userResp := entity.UserProfilePage{
@@ -340,58 +344,6 @@ func (h *handler) UserAddMentor(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Berhasil berlangganan", nil, nil)
 }
 
-// func (h *handler) userGetMentors(ctx *gin.Context) {
-// 	user, exist := ctx.Get("user")
-// 	if !exist {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-// 		return
-// 	}
-
-// 	claims, ok := user.(entity.UserClaims)
-// 	if !ok {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-// 		return
-// 	}
-
-// 	userID := claims.ID
-
-// 	type respHistory struct {
-// 		ID       uint                `json:"id"`
-// 		Nama     string              `json:"nama"`
-// 		Interest entity.RespInterest `json:"interest"`
-// 	}
-
-// 	var userDB entity.User
-// 	err := h.db.Preload("Mentor.Interest").Where("id = ?", userID).Take(&userDB).Error
-// 	if err != nil {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-// 		return
-// 	}
-
-// 	mentors := userDB.Mentor
-// 	if len(mentors) == 0 {
-// 		h.SuccessResponse(ctx, http.StatusOK, "Success", nil, nil)
-// 		return
-// 	}
-
-// 	var histories []respHistory
-// 	for _, mentor := range mentors {
-// 		var interest entity.RespInterest
-// 		if len(mentor.Interest) > 0 {
-// 			interest = entity.RespInterest{
-// 				Nama: mentor.Interest[0].Nama,
-// 			}
-// 		}
-// 		histories = append(histories, respHistory{
-// 			ID:       mentor.ID,
-// 			Nama:     mentor.FullName,
-// 			Interest: interest,
-// 		})
-// 	}
-
-// 	h.SuccessResponse(ctx, http.StatusOK, "ini mentor", histories, nil)
-// }
-
 func (h *handler) UserAddMagang(ctx *gin.Context) {
 	var reqBody entity.MagangParam
 
@@ -439,60 +391,6 @@ func (h *handler) UserAddMagang(ctx *gin.Context) {
 	h.SuccessResponse(ctx, http.StatusOK, "Berhasil apply magang", nil, nil)
 }
 
-// func (h *handler) userGetMagangs(ctx *gin.Context) {
-// 	user, exist := ctx.Get("user")
-// 	if !exist {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-// 		return
-// 	}
-
-// 	claims, ok := user.(entity.UserClaims)
-// 	if !ok {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-// 		return
-// 	}
-
-// 	userID := claims.ID
-
-// 	type respHistory struct {
-// 		ID         uint                `json:"id"`
-// 		Logo       string              `json:"logo"`
-// 		Perusahaan string              `json:"perusahaan"`
-// 		Interest   entity.RespInterest `json:"interest"`
-// 	}
-
-// var userDB entity.User
-// err := h.db.Preload("Magang.Interest").Where("id = ?", userID).Take(&userDB).Error
-// if err != nil {
-// 	h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-// 	return
-// }
-
-// 	if len(userDB.Magang) == 0 {
-// 		h.SuccessResponse(ctx, http.StatusOK, "Success", nil, nil)
-// 		return
-// 	}
-
-// 	magangs := userDB.Magang
-// 	var histories []respHistory
-// 	for _, magang := range magangs {
-// 		var interest entity.RespInterest
-// 		if len(magang.Interest) > 0 {
-// 			interest = entity.RespInterest{
-// 				Nama: magang.Interest[0].Nama,
-// 			}
-// 		}
-// 		histories = append(histories, respHistory{
-// 			ID:         magang.ID,
-// 			Logo:       magang.Logo,
-// 			Perusahaan: magang.Perusahaan,
-// 			Interest:   interest,
-// 		})
-// 	}
-
-// 	h.SuccessResponse(ctx, http.StatusOK, "ini magang", histories, nil)
-// }
-
 func (h *handler) UserAddCourse(ctx *gin.Context) {
 	var reqBody entity.CourseParam
 
@@ -539,63 +437,6 @@ func (h *handler) UserAddCourse(ctx *gin.Context) {
 
 	h.SuccessResponse(ctx, http.StatusOK, "Berhasil berlangganan", nil, nil)
 }
-
-// func (h *handler) userGetCourses(ctx *gin.Context) {
-// 	user, exist := ctx.Get("user")
-// 	if !exist {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "Unauthorized", nil)
-// 		return
-// 	}
-
-// 	claims, ok := user.(entity.UserClaims)
-// 	if !ok {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid token", nil)
-// 		return
-// 	}
-
-// 	userID := claims.ID
-
-// 	type respHistory struct {
-// 		ID       uint                `json:"id"`
-// 		Judul    string              `json:"judul"`
-// 		Interest entity.RespInterest `json:"interest"`
-// 	}
-
-// 	var courseDB []entity.Course
-// 	err := h.db.
-// 		Joins("JOIN user_courses ON user_courses.course_id = courses.id").
-// 		Where("user_courses.user_id = ?", userID).
-// 		Find(&courseDB).Error
-// 	if err != nil {
-// 		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-// 		return
-// 	}
-
-// 	var histories []respHistory
-// 	for _, course := range courseDB {
-// 		var interest entity.RespInterest
-
-// 		if course.InterestID != 0 {
-// 			interests := &entity.Interest{}
-// 			err := h.db.Model(interests).Where("id = ?", course.InterestID).Take(&interests).Error
-// 			if err != nil {
-// 				h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
-// 				return
-// 			}
-// 			interest = entity.RespInterest{
-// 				Nama: interests.Nama,
-// 			}
-// 		}
-
-// 		histories = append(histories, respHistory{
-// 			ID:       course.ID,
-// 			Judul:    course.Judul,
-// 			Interest: interest,
-// 		})
-// 	}
-
-// 	h.SuccessResponse(ctx, http.StatusOK, "Success", histories, nil)
-// }
 
 func (h *handler) userGetRiwayat(ctx *gin.Context) {
 	user, exist := ctx.Get("user")

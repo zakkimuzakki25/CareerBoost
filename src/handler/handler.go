@@ -77,6 +77,7 @@ func (h *handler) registerRoutes() {
 	api.GET("/coursedata/:course_id", h.getCourseData)
 	api.POST("/courseinfo/checkout/:course_id", h.UserAddCourse)
 
+	api.GET("/interests", h.getAllInterest)
 }
 
 func (h *handler) ping(ctx *gin.Context) {
