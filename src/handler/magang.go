@@ -62,7 +62,7 @@ func (h *handler) getMagangRecomendation(ctx *gin.Context) {
 		resp.Perusahaan = magang.Perusahaan
 		resp.Lokasi = magang.Lokasi
 		resp.Applied = uint(count)
-		resp.StatusMagang = magang.StatusMagang
+		resp.StatusMagang = magang.StatusMagangShort
 
 		var skill []entity.Skill
 		if err := h.db.Model(&magang).Association("Skill").Find(&skill); err != nil {
@@ -113,7 +113,8 @@ func (h *handler) addNewMagang(ctx *gin.Context) {
 	magangDB.Rate = magangBody.Rate
 	magangDB.Fee = magangBody.Fee
 	magangDB.JangkaWaktu = magangBody.JangkaWaktu
-	magangDB.StatusMagang = magangBody.StatusMagang
+	magangDB.StatusMagangLong = magangBody.StatusMagangLong
+	magangDB.StatusMagangShort = magangBody.StatusMagangShort
 	magangDB.JobDesc = magangBody.JobDesc
 
 	var skills []entity.Skill
@@ -227,7 +228,7 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 		resp.Rate = magang.Rate
 		resp.Fee = magang.Fee
 		resp.JangkaWaktu = magang.JangkaWaktu
-		resp.StatusMagang = magang.StatusMagang
+		resp.StatusMagang = magang.StatusMagangLong
 
 		var skill []entity.Skill
 		if err := h.db.Model(&magang).Association("Skill").Find(&skill); err != nil {
@@ -310,7 +311,7 @@ func (h *handler) getMagangData(ctx *gin.Context) {
 			ID:           rekom.ID,
 			Logo:         rekom.Logo,
 			Lokasi:       rekom.Lokasi,
-			StatusMagang: rekom.StatusMagang,
+			StatusMagang: rekom.StatusMagangLong,
 
 			Apllied: uint(count),
 
@@ -336,7 +337,7 @@ func (h *handler) getMagangData(ctx *gin.Context) {
 	resp.Perusahaan = magangDB.Perusahaan
 	resp.Deskripsi = magangDB.Deskripsi
 	resp.JangkaWaktu = magangDB.JangkaWaktu
-	resp.StatusMagang = magangDB.StatusMagang
+	resp.StatusMagang = magangDB.StatusMagangLong
 	resp.JobDesc = jobdescs
 
 	var skill []entity.Skill
