@@ -71,6 +71,7 @@ func (h *handler) registerRoutes() {
 	api.GET("/maganginfo/:magang_id", h.getMagangData)
 	api.POST("/maganginfo/checkout/:magang_id", h.UserAddMagang)
 
+	api.GET("/courseinfo/rekomendasi", h.getCourseRekomendasi)
 	api.GET("/courseinfo", h.getAllCourseHome)
 	api.GET("/courseinfo/all", h.getAllCourse)
 	api.GET("/courseinfo/:course_id", h.getCourseInfo)
