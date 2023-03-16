@@ -260,7 +260,7 @@ func (h *handler) getCourseRekomendasi(ctx *gin.Context) {
 		Offset(int(courseParam.Offset))
 
 	if err := db.
-		Order("rate desc").Limit(8).
+		Order("rate desc").Limit(5).
 		Joins("JOIN interests ON courses.interest_id = interests.id").
 		Joins("JOIN users_interest ON interests.id = users_interest.interest_id").
 		Where("users_interest.user_id = ? AND courses.interest_id = users_interest.interest_id", userID).
@@ -276,7 +276,7 @@ func (h *handler) getCourseRekomendasi(ctx *gin.Context) {
 
 	if err := h.db.
 		Table("courses").
-		Order("rate desc").Limit(8).
+		Order("rate desc").Limit(5).
 		Joins("JOIN interests ON courses.interest_id = interests.id").
 		Joins("JOIN users_interest ON interests.id = users_interest.interest_id").
 		Where("users_interest.user_id = ? AND courses.interest_id = users_interest.interest_id", userID).
