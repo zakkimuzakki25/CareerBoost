@@ -253,21 +253,11 @@ func (h *handler) getCourseRekomendasi(ctx *gin.Context) {
 
 	courseParam.FormatPagination()
 
-	var courseSearch entity.CourseSearch
-	if err := h.BindParam(ctx, &courseSearch); err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body course", nil)
-		return
-	}
-
 	var courseBody []entity.Course
 
 	db := h.db.Model(entity.Course{}).
 		Limit(int(courseParam.Limit)).
 		Offset(int(courseParam.Offset))
-
-	if courseSearch.Key != "" {
-		db = db.Where("judul LIKE ?", "%"+courseSearch.Key+"%")
-	}
 
 	if err := db.
 		Order("rate desc").Limit(8).
