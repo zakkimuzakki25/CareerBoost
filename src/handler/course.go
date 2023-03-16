@@ -156,6 +156,80 @@ func (h *handler) getAllCourse(ctx *gin.Context) {
 }
 
 func (h *handler) getAllCourseHome(ctx *gin.Context) {
+	var courseParam entity.CourseParam
+	if err := h.BindParam(ctx, &courseParam); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request body", nil)
+		return
+	}
+
+	courseParam.FormatPagination()
+
+	var courseSearch entity.CourseSearch
+	if err := h.BindParam(ctx, &courseSearch); err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "gagal init body course", nil)
+		return
+	}
+
+	var courseBody []entity.Course
+
+	db := h.db.Model(entity.Course{}).
+		Limit(int(courseParam.Limit)).
+		Offset(int(courseParam.Offset))
+
+	if courseSearch.Key != "" {
+		db = db.Where("judul LIKE ?", "%"+courseSearch.Key+"%")
+	}
+
+	if err := db.
+		Order("rate desc").Limit(8).
+		Limit(int(courseParam.Limit)).
+		Offset(int(courseParam.Offset)).
+		Find(&courseBody).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	var totalElements int64
+
+	if err := h.db.
+		Table("courses").
+		Order("rate desc").Limit(8).
+		Count(&totalElements).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	courseParam.ProcessPagination(totalElements)
+
+	type resp struct {
+		ID        uint    `json:"id"`
+		Foto      string  `json:"foto"`
+		Judul     string  `json:"judul"`
+		Deskripsi string  `json:"deskripsi"`
+		Rate      float32 `json:"rate"`
+		Vote      uint    `json:"vote"`
+		Price     float32 `json:"price"`
+	}
+
+	var courses []resp
+	for _, course := range courseBody {
+
+		var resps resp
+		resps.ID = course.ID
+		resps.Vote = course.Vote
+		resps.Foto = course.Foto
+		resps.Judul = course.Judul
+		resps.Deskripsi = course.Deskripsi
+		resps.Rate = course.Rate
+		resps.Price = course.Price
+
+		courses = append(courses, resps)
+	}
+
+	h.SuccessResponse(ctx, http.StatusOK, "Success", courses, &courseParam.PaginationParam)
+}
+
+func (h *handler) getCourseRekomendasi(ctx *gin.Context) {
 
 	user, exist := ctx.Get("user")
 	if !exist {

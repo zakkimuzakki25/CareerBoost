@@ -15,7 +15,7 @@ type User struct {
 	Password     string     `json:"password" gorm:"type:VARCHAR(255);NOT NULL"`
 	Skill        []Skill    `json:"skillID" gorm:"many2many:users_skill;default:null"`
 	Interest     []Interest `json:"interestID" gorm:"many2many:users_interest"`
-	TanggalLahir time.Time  `json:"tanggal_lahir" gorm:"default:null"`
+	TanggalLahir string     `json:"tanggal_lahir" gorm:"default:null"`
 	TempatLahir  string     `json:"tempat_lahir" gorm:"type:VARCHAR(50);default:null"`
 	Lokasi       string     `json:"lokasi" gorm:"type:VARCHAR(50);default:null"`
 	ProfilePhoto string     `json:"profile_photo" gorom:"default:null"`
@@ -44,20 +44,20 @@ type UserProfilePage struct {
 	Lokasi       string               `json:"lokasi"`
 	ProfilePhoto string               `json:"profile_photo"`
 	Deskripsi    string               `json:"deskripsi"`
-	TanggalLahir time.Time            `json:"tanggal_lahir"`
+	TanggalLahir string               `json:"tanggal_lahir"`
 	TempatLahir  string               `json:"tempat_lahir"`
 	InterestID   []RespInterestWithID `json:"interest"`
 }
 
 type UserUpdateProfile struct {
-	Email        string    `json:"email"`
-	FullName     string    `json:"full_name"`
-	Lokasi       string    `json:"lokasi"`
-	ProfilePhoto string    `json:"profile_photo"`
-	Deskripsi    string    `json:"deskripsi"`
-	TanggalLahir time.Time `json:"tanggal_lahir"`
-	TempatLahir  string    `json:"tempat_lahir"`
-	InterestID   []uint    `json:"interest"`
+	Email        string `json:"email"`
+	FullName     string `json:"full_name"`
+	Lokasi       string `json:"lokasi"`
+	ProfilePhoto string `json:"profile_photo"`
+	Deskripsi    string `json:"deskripsi"`
+	TanggalLahir string `json:"tanggal_lahir"`
+	TempatLahir  string `json:"tempat_lahir"`
+	InterestID   []uint `json:"interest"`
 }
 
 type UserHome struct {
