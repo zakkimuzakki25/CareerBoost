@@ -130,7 +130,7 @@ func (h *handler) addNewMagang(ctx *gin.Context) {
 	}
 
 	if err := h.db.Create(&magangDB).Error; err != nil {
-		h.ErrorResponse(ctx, http.StatusInternalServerError, "add mentor gagal", nil)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
