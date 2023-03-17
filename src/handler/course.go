@@ -396,7 +396,7 @@ func (h *handler) getCourseInfo(ctx *gin.Context) {
 
 	err := h.db.Where("id = ?", courseBody.ID).Take(&courseDB).Error
 	if err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, "Error take course", nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
