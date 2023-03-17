@@ -59,6 +59,7 @@ type MentorAdd struct {
 	ProfilePhoto string  `json:"profile_photo"`
 	FullName     string  `json:"full_name"`
 	Work         string  `json:"work"`
+	Perusahaan   string  `json:"perusahaan"`
 	Lokasi       string  `json:"lokasi"`
 	Skill        []uint  `json:"skillID"`
 	Interest     []uint  `json:"interestID"`

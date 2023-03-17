@@ -97,7 +97,7 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 	var mentorBody entity.MentorAdd
 	if err := h.BindBody(ctx, &mentorBody); err != nil {
 		fmt.Println(err)
-		h.ErrorResponse(ctx, http.StatusBadRequest, "invalid request register", nil)
+		// h.ErrorResponse(ctx, http.StatusBadRequest, err., nil)
 		return
 	}
 
@@ -111,6 +111,8 @@ func (h *handler) addNewMentor(ctx *gin.Context) {
 	mentorDB.WA = mentorBody.WA
 	mentorDB.IG = mentorBody.IG
 	mentorDB.Email = mentorBody.Email
+	mentorDB.Work = mentorBody.Work
+	mentorDB.Perusahaan = mentorBody.Perusahaan
 
 	var exps []entity.Exp
 	for _, exp := range mentorBody.Exp {
