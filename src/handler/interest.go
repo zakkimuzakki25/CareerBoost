@@ -3,6 +3,7 @@ package handler
 import (
 	"CareerBoost/src/entity"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ func (h *handler) getAllInterest(ctx *gin.Context) {
 	for _, s := range interest {
 		resp = append(resp, entity.RespInterestWithID{
 			Nama: s.Nama,
-			ID:   s.ID,
+			ID:   strconv.FormatUint(uint64(s.ID), 10),
 		})
 	}
 

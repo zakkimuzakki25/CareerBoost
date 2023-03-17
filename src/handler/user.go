@@ -5,6 +5,7 @@ import (
 	"CareerBoost/src/entity"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -245,7 +246,7 @@ func (h *handler) userGetProfile(ctx *gin.Context) {
 	for _, s := range interest {
 		interests = append(interests, entity.RespInterestWithID{
 			Nama: s.Nama,
-			ID:   s.ID,
+			ID:   strconv.FormatUint(uint64(s.ID), 10),
 		})
 	}
 

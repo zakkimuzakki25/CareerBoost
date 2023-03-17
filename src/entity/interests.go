@@ -23,5 +23,5 @@ type RespInterest struct {
 
 type RespInterestWithID struct {
 	Nama string `json:"label"`
-	ID   uint   `json:"value"`
+	ID   string `json:"value"`
 }
