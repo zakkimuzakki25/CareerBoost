@@ -31,6 +31,17 @@ func (h *handler) addNewCourse(ctx *gin.Context) {
 		return
 	}
 
+	var skill []entity.Skill
+	if err := h.db.Find(&skill, courseBody.Skill).Error; err != nil {
+		h.ErrorResponse(ctx, http.StatusBadRequest, "interest not found", nil)
+		return
+	}
+
+	if err := h.db.Model(&courseDB).Association("Skill").Append(skill); err != nil {
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
 	for _, playlist := range courseBody.Playlist {
 		var playl entity.Playlist
 
@@ -385,7 +396,7 @@ func (h *handler) getCourseInfo(ctx *gin.Context) {
 
 	err := h.db.Where("id = ?", courseBody.ID).Take(&courseDB).Error
 	if err != nil {
-		h.ErrorResponse(ctx, http.StatusBadRequest, err.Error(), nil)
+		h.ErrorResponse(ctx, http.StatusBadRequest, "Error take course", nil)
 		return
 	}
 
@@ -400,6 +411,10 @@ func (h *handler) getCourseInfo(ctx *gin.Context) {
 		Video  []RespVideo
 	}
 
+	type RespSkill struct {
+		Nama string
+	}
+
 	type CourseRespData struct {
 		Judul     string         `json:"judul"`
 		Deskripsi string         `json:"deskripsi"`
@@ -408,6 +423,7 @@ func (h *handler) getCourseInfo(ctx *gin.Context) {
 		Rate      float32        `json:"rate"`
 		Vote      uint           `json:"vote"`
 		Price     float32        `json:"price"`
+		Skill     []RespSkill    `json:"skill"`
 	}
 
 	var resp CourseRespData
@@ -448,6 +464,19 @@ func (h *handler) getCourseInfo(ctx *gin.Context) {
 			Video:  respVideos,
 		})
 	}
+
+	var skills []entity.Skill
+	if err := h.db.Joins("JOIN coursess_skill ON coursess_skill.skill_id = skills.id").Where("coursess_skill.course_id = ?", courseDB.ID).Find(&skills).Error; err != nil {
+		fmt.Println(err)
+		h.ErrorResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+	var skillresp []RespSkill
+	for _, s := range skills {
+		skillresp = append(skillresp, RespSkill{Nama: s.Nama})
+	}
+
+	resp.Skill = skillresp
 
 	h.SuccessResponse(ctx, http.StatusOK, "Success", resp, nil)
 }

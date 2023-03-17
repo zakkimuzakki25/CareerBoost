@@ -12,6 +12,7 @@ type Course struct {
 	Intro      string     `json:"intro" gorm:"type:text"`
 	InterestID uint       `json:"interest_id"`
 	Playlist   []Playlist `json:"playlist"`
+	Skill      []Skill    `json:"skill" gorm:"many2many:coursess_skill"`
 	Rate       float32    `json:"rate"`
 	Price      float32    `json:"price"`
 	Vote       uint       `json:"vote"`
@@ -27,6 +28,7 @@ type CourseAdd struct {
 	Price      float32    `json:"price"`
 	InterestID uint       `json:"interest_id"`
 	Vote       uint       `json:"vote"`
+	Skill      []uint     `json:"skill"`
 }
 
 type CourseRespData struct {

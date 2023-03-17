@@ -19,6 +19,7 @@ type Skill struct {
 	User   []User   `gorm:"many2many:users_skill"`
 	Mentor []Mentor `gorm:"many2many:mentors_skill"`
 	Magang []Magang `gorm:"many2many:magangs_skill"`
+	Course []Course `gorm:"many2many:coursess_skill"`
 }
 
 type RespSkill struct {
