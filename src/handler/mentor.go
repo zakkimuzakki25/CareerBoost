@@ -20,6 +20,8 @@ func (h *handler) getAllMentor(ctx *gin.Context) {
 	var mentorDB []entity.Mentor
 
 	db := h.db.Model(entity.Mentor{}).
+		Order("rate desc").
+		Limit(4).
 		Limit(int(postParam.Limit)).
 		Offset(int(postParam.Offset))
 
@@ -31,6 +33,8 @@ func (h *handler) getAllMentor(ctx *gin.Context) {
 	var totalElements int64
 
 	db = h.db.Model(entity.Mentor{}).
+		Order("rate desc").
+		Limit(4).
 		Limit(int(postParam.Limit)).
 		Offset(int(postParam.Offset))
 
@@ -275,6 +279,7 @@ func (h *handler) getMentorFilter(ctx *gin.Context) {
 	var mentorDB []entity.Mentor
 
 	db := h.db.Model(entity.Mentor{}).
+		Order("created_at desc").
 		Limit(int(postParam.Limit)).
 		Offset(int(postParam.Offset))
 
@@ -294,6 +299,7 @@ func (h *handler) getMentorFilter(ctx *gin.Context) {
 	var totalElements int64
 
 	db = h.db.Model(entity.Mentor{}).
+		Order("created_at desc").
 		Limit(int(postParam.Limit)).
 		Offset(int(postParam.Offset))
 
