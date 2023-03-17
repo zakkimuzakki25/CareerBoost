@@ -165,6 +165,7 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 	var magangDB []entity.Magang
 
 	db := h.db.Model(entity.Magang{}).
+		Order("created_at desc").
 		Limit(int(magangParam.Limit)).
 		Offset(int(magangParam.Offset))
 
@@ -186,6 +187,7 @@ func (h *handler) getMagangFilter(ctx *gin.Context) {
 	var totalElements int64
 
 	db = h.db.Model(entity.Magang{}).
+		Order("created_at desc").
 		Limit(int(magangParam.Limit)).
 		Offset(int(magangParam.Offset))
 
