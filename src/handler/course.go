@@ -343,6 +343,7 @@ func (h *handler) getCourseData(ctx *gin.Context) {
 
 	var resp entity.CourseRespData
 
+	resp.Foto = courseDB.Foto
 	resp.Judul = courseDB.Judul
 	resp.Deskripsi = courseDB.Deskripsi
 	resp.Intro = courseDB.Intro

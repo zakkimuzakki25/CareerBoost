@@ -32,6 +32,7 @@ type CourseAdd struct {
 }
 
 type CourseRespData struct {
+	Foto      string         `json:"foto"`
 	Judul     string         `json:"judul"`
 	Deskripsi string         `json:"deskripsi"`
 	Intro     string         `json:"intro"`

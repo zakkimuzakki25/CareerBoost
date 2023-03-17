@@ -56,7 +56,7 @@ func (h *handler) registerRoutes() {
 	api.GET("/profile/history", h.userGetRiwayat)
 	api.GET("/profile/langganan", h.userGetLangganan)
 
-	api.GET("/mentorinfo/rekomendasi", h.getMagangRecomendation)
+	api.GET("/mentorinfo/rekomendasi", h.getAllMentor)
 	api.GET("/mentorinfo", h.getMentorFilter)
 	api.GET("/mentorinfo/data/:mentor_id", h.getMentorData)
 	api.GET("/mentorinfo/pengalaman/:mentor_id", h.getMentorExp)
