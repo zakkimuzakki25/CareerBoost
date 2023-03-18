@@ -45,7 +45,3 @@ type Filter struct {
 	InterestID []int  `form:"interestID[]"`
 	Key        string `form:"search"`
 }
-
-// type mentorParam struct {
-// 	ID uint `uri:"mentor_id" gorm:"column:id"`
-// }
