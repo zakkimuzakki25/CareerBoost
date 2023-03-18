@@ -2,7 +2,6 @@ package handler
 
 import (
 	"CareerBoost/sdk/config"
-	"CareerBoost/sdk/middleware"
 	"fmt"
 
 	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
@@ -34,10 +33,10 @@ func (h *handler) registerRoutes() {
 
 	api := h.http.Group("api")
 
-	api.Use(middleware.JwtMiddleware())
+	api.Use(JwtMiddleware())
 
 	admin := h.http.Group("admin")
-	admin.Use(middleware.JwtMiddlewareAdmin())
+	admin.Use(JwtMiddlewareAdmin())
 
 	h.http.POST("/admin/login", h.adminLogin)
 	admin.GET("/logout", h.adminLogout)
