@@ -4,7 +4,6 @@ import (
 	"CareerBoost/sdk/config"
 	"CareerBoost/sdk/middleware"
 	"fmt"
-	"net/http"
 
 	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
 	"github.com/gin-gonic/gin"
@@ -45,7 +44,6 @@ func (h *handler) registerRoutes() {
 	admin.POST("/mentor/post", h.addNewMentor)
 	admin.POST("/magang/post", h.addNewMagang)
 	admin.POST("/course/post", h.addNewCourse)
-	admin.GET("/", h.ping)
 
 	h.http.GET("/", h.userGetHome)
 	h.http.POST("/user/register", h.userRegister)
@@ -74,11 +72,6 @@ func (h *handler) registerRoutes() {
 	api.GET("/coursedata/:course_id", h.getCourseData)
 	api.POST("/courseinfo/checkout/:course_id", h.UserAddCourse)
 
-	api.GET("/interests", h.getAllInterest)
-}
-
-func (h *handler) ping(ctx *gin.Context) {
-	h.SuccessResponse(ctx, http.StatusOK, "ping", nil, nil)
 }
 
 func (h *handler) Run() {
